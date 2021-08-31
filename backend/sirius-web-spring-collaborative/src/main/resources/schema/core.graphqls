@@ -14,7 +14,7 @@ interface Viewer {
 type EditingContext {
   id: ID!
   domains: [Domain!]!
-  representation(representationId: ID!): Representation
+  representation(representationId: ID!): RepresentationMetadata
   representations: EditingContextRepresentationConnection!
   representationDescriptions(classId: ID!): EditingContextRepresentationDescriptionConnection!
   stereotypeDescriptions: EditingContextStereotypeDescriptionConnection!
@@ -26,6 +26,13 @@ type EditingContext {
 type Domain {
   id: ID!
   label: String!
+}
+
+type RepresentationMetadata {
+  id: ID!
+  description: RepresentationDescription!
+  label: String!
+  kind: String!
 }
 
 interface Representation {
@@ -55,7 +62,7 @@ type EditingContextRepresentationConnection {
 }
 
 type EditingContextRepresentationEdge {
-  node: Representation!
+  node: RepresentationMetadata!
 }
 
 type EditingContextRepresentationDescriptionConnection {
@@ -90,7 +97,6 @@ type Diagnostic {
   kind: String!
   message: String!
 }
-
 
 type ErrorPayload {
   id: ID!
@@ -191,7 +197,7 @@ union CreateRepresentationPayload = ErrorPayload | CreateRepresentationSuccessPa
 
 type CreateRepresentationSuccessPayload {
   id: ID!
-  representation: Representation!
+  representation: RepresentationMetadata!
 }
 
 input CreateRootObjectInput {

@@ -223,7 +223,7 @@ union DeleteFromDiagramPayload = ErrorPayload | DeleteFromDiagramSuccessPayload
 
 type DeleteFromDiagramSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
 
 input EditLabelInput {
@@ -238,7 +238,7 @@ union EditLabelPayload = ErrorPayload|EditLabelSuccessPayload
 
 type EditLabelSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
 
 input InvokeEdgeToolOnDiagramInput {
@@ -254,7 +254,7 @@ union InvokeEdgeToolOnDiagramPayload = ErrorPayload | InvokeEdgeToolOnDiagramSuc
 
 type InvokeEdgeToolOnDiagramSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
 
 input InvokeNodeToolOnDiagramInput {
@@ -272,7 +272,7 @@ union InvokeNodeToolOnDiagramPayload = ErrorPayload | InvokeNodeToolOnDiagramSuc
 
 type InvokeNodeToolOnDiagramSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
 
 input UpdateNodeBoundsInput {
@@ -290,7 +290,7 @@ union UpdateNodeBoundsPayload = ErrorPayload | UpdateNodeBoundsSuccessPayload
 
 type UpdateNodeBoundsSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
 
 input UpdateNodePositionInput {
@@ -306,5 +306,5 @@ union UpdateNodePositionPayload = ErrorPayload | UpdateNodePositionSuccessPayloa
 
 type UpdateNodePositionSuccessPayload {
   id: ID!
-  diagram: Diagram!
+  diagram: RepresentationMetadata!
 }
