@@ -20,11 +20,11 @@ import java.util.UUID;
 import org.eclipse.sirius.web.core.api.IInput;
 
 /**
- * The input object of the queryBasedIntEventHandler.
+ * The input object of the queryBasedStringEventHandler.
  *
  * @author fbarbin
  */
-public final class QueryBasedIntInput implements IInput {
+public final class QueryBasedStringInput implements IInput {
 
     private UUID id;
 
@@ -32,16 +32,16 @@ public final class QueryBasedIntInput implements IInput {
 
     private Object context;
 
-    public QueryBasedIntInput() {
+    public QueryBasedStringInput() {
         // Used by Jackson
     }
 
-    public QueryBasedIntInput(UUID id, String query) {
+    public QueryBasedStringInput(UUID id, String query) {
         this.id = Objects.requireNonNull(id);
         this.query = Objects.requireNonNull(query);
     }
 
-    public QueryBasedIntInput(UUID id, String query, Object context) {
+    public QueryBasedStringInput(UUID id, String query, Object context) {
         this(id, query);
         this.context = Objects.requireNonNull(context);
     }
