@@ -78,13 +78,17 @@ export interface GQLViewer {
 }
 
 export interface GQLEditingContext {
-  representation: GQLRepresentation;
+  representation: GQLRepresentationMetadata;
 }
 
-export interface GQLRepresentation {
+export interface GQLRepresentationMetadata {
+  kind: string;
+  description: GQLRepresentationDescription;
+}
+export interface GQLRepresentationDescription {
   __typename: string;
 }
-export interface GQLDiagram extends GQLRepresentation {
+export interface GQLDiagramDescription extends GQLRepresentationDescription {
   toolSections: GQLToolSection[];
 }
 

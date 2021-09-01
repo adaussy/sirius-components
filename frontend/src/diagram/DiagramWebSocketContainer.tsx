@@ -20,9 +20,10 @@ import { useMachine } from '@xstate/react';
 import { ServerContext } from 'common/ServerContext';
 import {
   CreateNodeTool,
-  GQLDiagram,
+  GQLDiagramDescription,
   GQLGetToolSectionsData,
   GQLGetToolSectionsVariables,
+  GQLRepresentationMetadata,
   Palette,
   Tool,
 } from 'diagram/DiagramWebSocketContainer.types';
@@ -113,7 +114,8 @@ const useDiagramWebSocketContainerStyle = makeStyles((theme) => ({
   },
 }));
 
-const isDiagram = (representation): representation is GQLDiagram => representation.__typename === 'Diagram';
+const isDiagram = (representation): representation is GQLRepresentationMetadata =>
+  representation.kind === 'Diagram' && representation.description.__typename === 'DiagramDescription';
 
 /**
  * Here be dragons!
@@ -580,7 +582,7 @@ export const DiagramWebSocketContainer = ({
     if (!toolSectionLoading && diagramWebSocketContainer === 'ready' && toolSectionData) {
       const representation = toolSectionData.viewer.editingContext.representation;
       if (isDiagram(representation)) {
-        const { toolSections } = representation;
+        const { toolSections } = representation.description as GQLDiagramDescription;
 
         const setToolSectionsEvent: SetToolSectionsEvent = { type: 'SET_TOOL_SECTIONS', toolSections: toolSections };
         dispatch(setToolSectionsEvent);

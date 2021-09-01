@@ -26,7 +26,6 @@ type Diagram implements Representation {
   position: Position!
   nodes: [Node!]!
   edges: [Edge!]!
-  toolSections: [ToolSection!]!
 }
 
 type Node {
@@ -183,6 +182,7 @@ type DiagramDescription implements RepresentationDescription {
   id: ID!
   label: String!
   autoLayout: Boolean!
+  toolSections: [ToolSection!]!
 }
 
 type NodeDescription {
