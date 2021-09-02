@@ -26,13 +26,13 @@ public class SelectionConfiguration implements IRepresentationConfiguration {
 
     private final UUID id;
 
-    private final UUID selectionId;
+    private final UUID descrioptionId;
 
     private final String targetObjectId;
 
-    public SelectionConfiguration(UUID id, UUID selectionId, String targetObjectId) {
+    public SelectionConfiguration(UUID id, UUID descriptionId, String targetObjectId) {
         this.id = Objects.requireNonNull(id);
-        this.selectionId = Objects.requireNonNull(selectionId);
+        this.descrioptionId = Objects.requireNonNull(descriptionId);
         this.targetObjectId = Objects.requireNonNull(targetObjectId);
     }
 
@@ -41,8 +41,8 @@ public class SelectionConfiguration implements IRepresentationConfiguration {
         return this.id;
     }
 
-    public UUID getSelectionId() {
-        return this.selectionId;
+    public UUID getDescriptionId() {
+        return this.descrioptionId;
     }
 
     public String getTargetObjectId() {
