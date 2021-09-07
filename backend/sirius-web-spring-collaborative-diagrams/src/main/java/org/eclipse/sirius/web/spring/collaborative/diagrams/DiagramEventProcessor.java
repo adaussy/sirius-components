@@ -23,6 +23,7 @@ import org.eclipse.sirius.web.core.api.IPayload;
 import org.eclipse.sirius.web.core.api.IRepresentationInput;
 import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.representations.IRepresentation;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeKind;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
@@ -58,6 +59,8 @@ public class DiagramEventProcessor implements IDiagramEventProcessor {
 
     private final IDiagramContext diagramContext;
 
+    private final ISemanticRepresentationMetadata diagramMetadata;
+
     private final List<IDiagramEventHandler> diagramEventHandlers;
 
     private final ISubscriptionManager subscriptionManager;
@@ -68,12 +71,13 @@ public class DiagramEventProcessor implements IDiagramEventProcessor {
 
     private final DiagramEventFlux diagramEventFlux;
 
-    public DiagramEventProcessor(IEditingContext editingContext, IDiagramContext diagramContext, List<IDiagramEventHandler> diagramEventHandlers, ISubscriptionManager subscriptionManager,
-            IDiagramCreationService diagramCreationService) {
+    public DiagramEventProcessor(IEditingContext editingContext, IDiagramContext diagramContext, ISemanticRepresentationMetadata diagramMetadata, List<IDiagramEventHandler> diagramEventHandlers,
+            ISubscriptionManager subscriptionManager, IDiagramCreationService diagramCreationService) {
         this.logger.trace("Creating the diagram event processor {}", diagramContext.getDiagram().getId()); //$NON-NLS-1$
 
         this.editingContext = Objects.requireNonNull(editingContext);
         this.diagramContext = Objects.requireNonNull(diagramContext);
+        this.diagramMetadata = Objects.requireNonNull(diagramMetadata);
         this.diagramEventHandlers = Objects.requireNonNull(diagramEventHandlers);
         this.subscriptionManager = Objects.requireNonNull(subscriptionManager);
         this.diagramCreationService = Objects.requireNonNull(diagramCreationService);
