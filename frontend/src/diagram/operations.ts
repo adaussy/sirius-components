@@ -41,7 +41,6 @@ export const diagramEventSubscription = gql`
             width
             height
           }
-          autoLayout
           nodes {
             ...nodeFields
             borderNodes {
@@ -295,7 +294,7 @@ export const invokeEdgeToolOnDiagramMutation = gql`
   }
 `;
 
-export const getToolSectionsQuery = gql`
+export const getDiagramDescriptionQuery = gql`
   fragment edgeCandidateField on EdgeCandidate {
     sources {
       id
@@ -305,7 +304,7 @@ export const getToolSectionsQuery = gql`
     }
   }
 
-  query getToolSections($editingContextId: ID!, $diagramId: ID!) {
+  query getDiagramDescription($editingContextId: ID!, $diagramId: ID!) {
     viewer {
       editingContext(editingContextId: $editingContextId) {
         representation(representationId: $diagramId) {
@@ -313,6 +312,7 @@ export const getToolSectionsQuery = gql`
           description {
             __typename
             ... on DiagramDescription {
+              autoLayout
               toolSections {
                 id
                 label

@@ -67,9 +67,9 @@ export interface NodeDescription {
   id: string;
 }
 
-export interface GQLGetToolSectionsVariables {}
+export interface GQLGetDiagramDescriptionVariables {}
 
-export interface GQLGetToolSectionsData {
+export interface GQLGetDiagramDescriptionData {
   viewer: GQLViewer;
 }
 
@@ -85,10 +85,12 @@ export interface GQLRepresentationMetadata {
   kind: string;
   description: GQLRepresentationDescription;
 }
+
 export interface GQLRepresentationDescription {
   __typename: string;
 }
 export interface GQLDiagramDescription extends GQLRepresentationDescription {
+  autoLayout: boolean;
   toolSections: GQLToolSection[];
 }
 

@@ -31,7 +31,7 @@ import siriusWebDiagram from './siriusWebDiagram.json';
 
 describe('ModelConverter', () => {
   it('converts a diagram', () => {
-    const sprottyDiagram = convertDiagram(siriusWebDiagram, httpOrigin, false);
+    const sprottyDiagram = convertDiagram(siriusWebDiagram, httpOrigin, false, false);
 
     expect(sprottyDiagram).not.toBeNull();
     expect(sprottyDiagram).not.toBeUndefined();

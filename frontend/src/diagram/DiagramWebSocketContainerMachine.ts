@@ -56,6 +56,7 @@ export interface DiagramWebSocketContainerContext {
   diagramServer: any;
   diagram: any;
   toolSections: ToolSection[];
+  autoLayout: boolean;
   activeTool: Tool | null;
   contextualPalette: Palette | null;
   latestSelection: Selection | null;
@@ -77,6 +78,7 @@ export type HandleSelectedObjectInSelectionDialogEvent = {
 export type ResetSelectedObjectInSelectionDialogEvent = { type: 'RESET_SELECTED_OBJECT_IN_SELECTION_DIALOG' };
 export type SwithRepresentationEvent = { type: 'SWITCH_REPRESENTATION'; representationId: string };
 export type SetToolSectionsEvent = { type: 'SET_TOOL_SECTIONS'; toolSections: GQLToolSection[] };
+export type SetAutoLayoutEvent = { type: 'SET_AUTO_LAYOUT'; autoLayout: boolean };
 export type SetDefaultToolEvent = { type: 'SET_DEFAULT_TOOL'; defaultTool: Tool };
 export type DiagramRefreshedEvent = { type: 'HANDLE_DIAGRAM_REFRESHED'; diagram: any };
 export type SubscribersUpdatedEvent = { type: 'HANDLE_SUBSCRIBERS_UPDATED'; subscribers: Subscriber[] };
@@ -113,6 +115,7 @@ export type DiagramWebSocketContainerEvent =
   | SwithRepresentationEvent
   | InitializeRepresentationEvent
   | SetToolSectionsEvent
+  | SetAutoLayoutEvent
   | SetDefaultToolEvent
   | DiagramRefreshedEvent
   | SubscribersUpdatedEvent
@@ -141,6 +144,7 @@ export const diagramWebSocketContainerMachine = Machine<
       diagramServer: null,
       diagram: null,
       toolSections: [],
+      autoLayout: false,
       activeTool: null,
       contextualPalette: null,
       latestSelection: null,
@@ -212,6 +216,11 @@ export const diagramWebSocketContainerMachine = Machine<
               SET_TOOL_SECTIONS: [
                 {
                   actions: 'setToolSections',
+                },
+              ],
+              SET_AUTO_LAYOUT: [
+                {
+                  actions: 'setAutoLayout',
                 },
               ],
               SET_DEFAULT_TOOL: [
@@ -391,6 +400,11 @@ export const diagramWebSocketContainerMachine = Machine<
         }
 
         return { toolSections: toolSectionsWithDefaults };
+      }),
+
+      setAutoLayout: assign((_, event) => {
+        const { autoLayout } = event as SetAutoLayoutEvent;
+        return { autoLayout };
       }),
 
       handleDiagramRefreshed: assign((_, event) => {
