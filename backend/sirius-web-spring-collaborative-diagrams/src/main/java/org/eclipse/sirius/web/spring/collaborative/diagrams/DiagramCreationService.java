@@ -127,9 +127,9 @@ public class DiagramCreationService implements IDiagramCreationService {
 
         // The auto layout is used for the first rendering and after that if it is activated
         if (this.shouldPerformFullLayout(optionalDiagramContext, diagramDescription)) {
-            newDiagram = this.layoutService.layout(newDiagram);
+            newDiagram = this.layoutService.layout(newDiagram, diagramDescription);
         } else if (optionalDiagramContext.isPresent()) {
-            newDiagram = this.layoutService.incrementalLayout(newDiagram, optionalDiagramElementEvent);
+            newDiagram = this.layoutService.incrementalLayout(newDiagram, diagramDescription, optionalDiagramElementEvent);
         }
 
         this.representationPersistenceService.save(editingContext, metadata, newDiagram);
