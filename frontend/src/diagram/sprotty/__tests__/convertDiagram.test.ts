@@ -38,7 +38,6 @@ describe('ModelConverter', () => {
 
     expect(Object.keys(sprottyDiagram)).toStrictEqual([
       'id',
-      'descriptionId',
       'kind',
       'type',
       'targetObjectId',

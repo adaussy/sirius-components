@@ -39,8 +39,6 @@ public final class Tree implements IRepresentation {
 
     private String kind;
 
-    private UUID descriptionId;
-
     private String label;
 
     private List<TreeItem> children;
@@ -55,14 +53,6 @@ public final class Tree implements IRepresentation {
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
-    public UUID getDescriptionId() {
-        return this.descriptionId;
     }
 
     @Override
@@ -91,8 +81,8 @@ public final class Tree implements IRepresentation {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, descriptionId: {2}, label: {3}, childCount: {4}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.descriptionId, this.label, this.children.size());
+        String pattern = "{0} '{'id: {1}, label: {3}, childCount: {4}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.children.size());
     }
 
     /**
@@ -106,19 +96,12 @@ public final class Tree implements IRepresentation {
 
         private String kind = KIND;
 
-        private UUID descriptionId;
-
         private String label;
 
         private List<TreeItem> children;
 
         private Builder(UUID id) {
             this.id = Objects.requireNonNull(id);
-        }
-
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
-            return this;
         }
 
         public Builder label(String label) {
@@ -135,7 +118,6 @@ public final class Tree implements IRepresentation {
             Tree tree = new Tree();
             tree.id = Objects.requireNonNull(this.id);
             tree.kind = Objects.requireNonNull(this.kind);
-            tree.descriptionId = Objects.requireNonNull(this.descriptionId);
             tree.label = Objects.requireNonNull(this.label);
             tree.children = Objects.requireNonNull(this.children);
             return tree;

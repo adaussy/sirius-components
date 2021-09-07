@@ -40,8 +40,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
     private String kind;
 
-    private UUID descriptionId;
-
     private String label;
 
     private String targetObjectId;
@@ -60,14 +58,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
-    public UUID getDescriptionId() {
-        return this.descriptionId;
     }
 
     @Override
@@ -108,8 +98,8 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, descriptionId: {2}, targetObjectId: {3}, label: {4}, message: {5}, objectsCount: {6}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.descriptionId, this.targetObjectId, this.label, this.message, this.objects.size());
+        String pattern = "{0} '{'id: {1}, descriptionId: {2}, label: {3}, message: {4}, objectsCount: {5}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.targetObjectId, this.label, this.message, this.objects.size());
     }
 
     /**
@@ -123,8 +113,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
         private String kind = KIND;
 
-        private UUID descriptionId;
-
         private String label;
 
         private String targetObjectId;
@@ -135,11 +123,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
         private Builder(UUID id) {
             this.id = Objects.requireNonNull(id);
-        }
-
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
-            return this;
         }
 
         public Builder label(String label) {
@@ -166,7 +149,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
             Selection selection = new Selection();
             selection.id = Objects.requireNonNull(this.id);
             selection.kind = Objects.requireNonNull(this.kind);
-            selection.descriptionId = Objects.requireNonNull(this.descriptionId);
             selection.label = Objects.requireNonNull(this.label);
             selection.targetObjectId = Objects.requireNonNull(this.targetObjectId);
             selection.message = this.message;

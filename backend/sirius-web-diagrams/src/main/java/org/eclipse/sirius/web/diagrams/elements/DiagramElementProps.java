@@ -36,8 +36,6 @@ public final class DiagramElementProps implements IProps {
 
     private String targetObjectId;
 
-    private UUID descriptionId;
-
     private String label;
 
     private Position position;
@@ -56,10 +54,6 @@ public final class DiagramElementProps implements IProps {
 
     public String getTargetObjectId() {
         return this.targetObjectId;
-    }
-
-    public UUID getDescriptionId() {
-        return this.descriptionId;
     }
 
     public String getLabel() {
@@ -100,8 +94,6 @@ public final class DiagramElementProps implements IProps {
 
         private String targetObjectId;
 
-        private UUID descriptionId;
-
         private String label;
 
         private Position position;
@@ -116,11 +108,6 @@ public final class DiagramElementProps implements IProps {
 
         public Builder targetObjectId(String targetObjectId) {
             this.targetObjectId = Objects.requireNonNull(targetObjectId);
-            return this;
-        }
-
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
             return this;
         }
 
@@ -148,7 +135,6 @@ public final class DiagramElementProps implements IProps {
             DiagramElementProps diagramElementProps = new DiagramElementProps();
             diagramElementProps.id = Objects.requireNonNull(this.id);
             diagramElementProps.targetObjectId = Objects.requireNonNull(this.targetObjectId);
-            diagramElementProps.descriptionId = Objects.requireNonNull(this.descriptionId);
             diagramElementProps.label = Objects.requireNonNull(this.label);
             diagramElementProps.position = Objects.requireNonNull(this.position);
             diagramElementProps.size = Objects.requireNonNull(this.size);

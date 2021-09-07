@@ -89,7 +89,6 @@ public class DiagramComponent implements IComponent {
         // @formatter:off
         DiagramElementProps diagramElementProps = DiagramElementProps.newDiagramElementProps(diagramId)
                 .targetObjectId(targetObjectId)
-                .descriptionId(diagramDescription.getId())
                 .label(label)
                 .position(Position.UNDEFINED)
                 .size(Size.UNDEFINED)

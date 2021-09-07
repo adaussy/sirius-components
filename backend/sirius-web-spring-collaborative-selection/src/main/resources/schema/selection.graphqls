@@ -20,7 +20,6 @@ type Selection implements Representation {
   id: ID!
   label: String!
   kind: String!
-  descriptionId: ID!
   targetObjectId: String!
   message: String
   objects: [SelectionObject!]!

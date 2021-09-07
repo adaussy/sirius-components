@@ -15,7 +15,6 @@ package org.eclipse.sirius.web.spring.collaborative.diagrams.handlers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,8 +23,6 @@ import org.eclipse.sirius.web.core.api.IPayload;
 import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.diagrams.Position;
 import org.eclipse.sirius.web.diagrams.Size;
-import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
-import org.eclipse.sirius.web.diagrams.tests.TestDiagramDescriptionBuilder;
 import org.eclipse.sirius.web.representations.IRepresentation;
 import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
@@ -53,12 +50,9 @@ public class RenameDiagramEventHandlerTests {
         UUID representationId = UUID.randomUUID();
         UUID targetObjectId = UUID.randomUUID();
 
-        DiagramDescription diagramDescription = new TestDiagramDescriptionBuilder().getDiagramDescription(UUID.randomUUID(), List.of(), List.of(), List.of());
-
         // @formatter:off
         Diagram diagram = Diagram.newDiagram(representationId)
                 .label(OLD_LABEL)
-                .descriptionId(diagramDescription.getId())
                 .targetObjectId(targetObjectId.toString())
                 .size(Size.of(10, 10))
                 .position(Position.at(0, 0))

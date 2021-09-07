@@ -18,7 +18,6 @@ type Validation implements Representation {
   id: ID!
   kind: String!
   label: String!
-  descriptionId: ID!
   diagnostics: [Diagnostic!]!
 }
 

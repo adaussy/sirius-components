@@ -57,7 +57,6 @@ public class ValidationComponent implements IComponent {
         // @formatter:off
         ValidationElementProps validationElementProps = ValidationElementProps.newValidationElementProps(id)
                 .label(label)
-                .descriptionId(validationDescription.getId())
                 .children(children)
                 .build();
         // @formatter:on

@@ -45,8 +45,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
 
     private String targetObjectId;
 
-    private UUID descriptionId;
-
     private List<Page> pages;
 
     private Form() {
@@ -83,14 +81,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
         return this.targetObjectId;
     }
 
-    @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
-    public UUID getDescriptionId() {
-        return this.descriptionId;
-    }
-
     @GraphQLNonNull
     @GraphQLField
     public List<@GraphQLNonNull Page> getPages() {
@@ -103,8 +93,8 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, label: {2}, targetObjectId: {3}, descriptionId: {4} pageCount: {5}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.targetObjectId, this.descriptionId, this.pages.size());
+        String pattern = "{0} '{'id: {1}, label: {2}, targetObjectId: {3}, pageCount: {4}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.targetObjectId, this.pages.size());
     }
 
     /**
@@ -122,8 +112,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
 
         private String targetObjectId;
 
-        private UUID descriptionId;
-
         private List<Page> pages;
 
         private Builder(UUID id) {
@@ -140,11 +128,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
             return this;
         }
 
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
-            return this;
-        }
-
         public Builder pages(List<Page> pages) {
             this.pages = pages;
             return this;
@@ -156,7 +139,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
             form.kind = Objects.requireNonNull(this.kind);
             form.label = Objects.requireNonNull(this.label);
             form.targetObjectId = Objects.requireNonNull(this.targetObjectId);
-            form.descriptionId = Objects.requireNonNull(this.descriptionId);
             form.pages = Objects.requireNonNull(this.pages);
             return form;
         }

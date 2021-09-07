@@ -19,7 +19,6 @@ type Diagram implements Representation {
   id: ID!
   label: String!
   kind: String!
-  descriptionId: ID!
   targetObjectId: ID!
   size: Size!
   position: Position!

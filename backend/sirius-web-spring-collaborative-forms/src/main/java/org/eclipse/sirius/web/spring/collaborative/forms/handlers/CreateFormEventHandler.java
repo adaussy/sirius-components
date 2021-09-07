@@ -103,7 +103,6 @@ public class CreateFormEventHandler implements IEditingContextEventHandler {
                     Form form = Form.newForm(UUID.randomUUID())
                             .label(createRepresentationInput.getRepresentationName())
                             .targetObjectId(targetObjectId)
-                            .descriptionId(representationDescription.getId())
                             .pages(List.of()) // We don't store form pages, it will be re-render by the FormProcessor.
                             .build();
                     // @formatter:on

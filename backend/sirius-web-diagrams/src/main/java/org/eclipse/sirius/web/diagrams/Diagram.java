@@ -42,8 +42,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
 
     private String targetObjectId;
 
-    private UUID descriptionId;
-
     private String label;
 
     private Position position;
@@ -79,14 +77,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
     @GraphQLNonNull
     public String getTargetObjectId() {
         return this.targetObjectId;
-    }
-
-    @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
-    public UUID getDescriptionId() {
-        return this.descriptionId;
     }
 
     @Override
@@ -130,8 +120,8 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, targetObjectId: {2}, descriptionId: {3}, label: {4}, nodeCount: {5}, edgeCount: {6}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.targetObjectId, this.descriptionId, this.label, this.nodes.size(), this.edges.size());
+        String pattern = "{0} '{'id: {1}, targetObjectId: {2}, label: {3}, nodeCount: {4}, edgeCount: {5}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.targetObjectId, this.label, this.nodes.size(), this.edges.size());
     }
 
     /**
@@ -146,8 +136,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
         private String kind = KIND;
 
         private String targetObjectId;
-
-        private UUID descriptionId;
 
         private String label;
 
@@ -166,7 +154,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
         private Builder(Diagram diagram) {
             this.id = diagram.getId();
             this.targetObjectId = diagram.getTargetObjectId();
-            this.descriptionId = diagram.getDescriptionId();
             this.label = diagram.getLabel();
             this.position = diagram.getPosition();
             this.size = diagram.getSize();
@@ -176,11 +163,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
 
         public Builder targetObjectId(String targetObjectId) {
             this.targetObjectId = Objects.requireNonNull(targetObjectId);
-            return this;
-        }
-
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
             return this;
         }
 
@@ -214,7 +196,6 @@ public final class Diagram implements IRepresentation, ISemanticRepresentation {
             diagram.id = Objects.requireNonNull(this.id);
             diagram.kind = Objects.requireNonNull(this.kind);
             diagram.targetObjectId = Objects.requireNonNull(this.targetObjectId);
-            diagram.descriptionId = Objects.requireNonNull(this.descriptionId);
             diagram.label = Objects.requireNonNull(this.label);
             diagram.position = Objects.requireNonNull(this.position);
             diagram.size = Objects.requireNonNull(this.size);

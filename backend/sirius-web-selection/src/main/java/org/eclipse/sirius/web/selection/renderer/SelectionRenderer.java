@@ -54,7 +54,6 @@ public class SelectionRenderer {
 
         // @formatter:off
         return Selection.newSelection(id)
-                .descriptionId(this.selectionDescription.getId())
                 .label(label)
                 .targetObjectId(targetObjectId)
                 .message(message)

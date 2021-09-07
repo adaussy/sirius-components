@@ -41,8 +41,6 @@ public final class Validation implements IRepresentation {
 
     private String label;
 
-    private UUID descriptionId;
-
     private List<Diagnostic> diagnostics;
 
     private Validation() {
@@ -55,14 +53,6 @@ public final class Validation implements IRepresentation {
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
-    public UUID getDescriptionId() {
-        return this.descriptionId;
     }
 
     @Override
@@ -91,8 +81,8 @@ public final class Validation implements IRepresentation {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, label: {2}, descriptionId: {3} diagnosticCount: {4}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.descriptionId, this.diagnostics.size());
+        String pattern = "{0} '{'id: {1}, label: {2}, diagnosticCount: {3}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.diagnostics.size());
     }
 
     /**
@@ -109,8 +99,6 @@ public final class Validation implements IRepresentation {
 
         private String label;
 
-        private UUID descriptionId;
-
         private List<Diagnostic> diagnostics;
 
         private Builder(UUID id) {
@@ -119,11 +107,6 @@ public final class Validation implements IRepresentation {
 
         public Builder label(String label) {
             this.label = Objects.requireNonNull(label);
-            return this;
-        }
-
-        public Builder descriptionId(UUID descriptionId) {
-            this.descriptionId = Objects.requireNonNull(descriptionId);
             return this;
         }
 
@@ -137,7 +120,6 @@ public final class Validation implements IRepresentation {
             validation.id = Objects.requireNonNull(this.id);
             validation.kind = Objects.requireNonNull(this.kind);
             validation.label = Objects.requireNonNull(this.label);
-            validation.descriptionId = Objects.requireNonNull(this.descriptionId);
             validation.diagnostics = Objects.requireNonNull(this.diagnostics);
             return validation;
         }

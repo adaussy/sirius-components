@@ -25,8 +25,6 @@ import org.eclipse.sirius.web.annotations.graphql.GraphQLInterfaceType;
 public interface IRepresentation {
     UUID getId();
 
-    UUID getDescriptionId();
-
     String getLabel();
 
     String getKind();

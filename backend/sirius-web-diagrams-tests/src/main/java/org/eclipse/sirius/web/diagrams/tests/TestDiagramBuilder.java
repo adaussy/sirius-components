@@ -48,7 +48,6 @@ public class TestDiagramBuilder {
         // @formatter:off
         return Diagram.newDiagram(id)
                 .label("diagramLabel") //$NON-NLS-1$
-                .descriptionId(UUID.randomUUID())
                 .targetObjectId("diagramTargetObjectId") //$NON-NLS-1$
                 .position(Position.UNDEFINED)
                 .size(Size.UNDEFINED)
