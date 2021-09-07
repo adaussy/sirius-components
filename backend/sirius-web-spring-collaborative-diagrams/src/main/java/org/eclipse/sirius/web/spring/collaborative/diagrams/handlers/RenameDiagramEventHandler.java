@@ -84,7 +84,34 @@ public class RenameDiagramEventHandler implements IDiagramEventHandler {
                 Diagram diagram = optionalDiagram.get();
 
                 Diagram renamedDiagram = Diagram.newDiagram(diagram).label(newLabel).build();
-                this.representationPersistenceService.save(editingContext, renamedDiagram);
+                ISemanticRepresentationMetadata renamedMetadata = new ISemanticRepresentationMetadata() {
+
+                    @Override
+                    public UUID getId() {
+                        return diagramMetadata.getId();
+                    }
+
+                    @Override
+                    public UUID getDescriptionId() {
+                        return diagramMetadata.getDescriptionId();
+                    }
+
+                    @Override
+                    public String getLabel() {
+                        return newLabel;
+                    }
+
+                    @Override
+                    public String getKind() {
+                        return diagramMetadata.getKind();
+                    }
+
+                    @Override
+                    public String getTargetObjectId() {
+                        return diagramMetadata.getTargetObjectId();
+                    }
+                };
+                this.representationPersistenceService.save(editingContext, renamedMetadata, renamedDiagram);
                 diagramContext.update(renamedDiagram);
 
                 return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_RENAMING, renameRepresentationInput.getRepresentationId()),

@@ -15,6 +15,7 @@ package org.eclipse.sirius.web.spring.collaborative.diagrams;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.sirius.web.components.Element;
@@ -31,6 +32,7 @@ import org.eclipse.sirius.web.diagrams.events.ArrangeAllEvent;
 import org.eclipse.sirius.web.diagrams.events.IDiagramEvent;
 import org.eclipse.sirius.web.diagrams.layout.api.ILayoutService;
 import org.eclipse.sirius.web.diagrams.renderer.DiagramRenderer;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.representations.VariableManager;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationPersistenceService;
 import org.eclipse.sirius.web.spring.collaborative.api.Monitoring;
@@ -73,37 +75,38 @@ public class DiagramCreationService implements IDiagramCreationService {
     }
 
     @Override
-    public Diagram create(String label, Object targetObject, DiagramDescription diagramDescription, IEditingContext editingContext) {
-        Diagram newDiagram = this.doRender(label, targetObject, editingContext, diagramDescription, Optional.empty());
-        return newDiagram;
+    public Optional<Diagram> create(IEditingContext editingContext, ISemanticRepresentationMetadata metadata) {
+        if (Objects.equals("Diagram", metadata.getKind())) { //$NON-NLS-1$
+            return this.refresh(editingContext, metadata, null);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Optional<Diagram> refresh(IEditingContext editingContext, IDiagramContext diagramContext) {
-        Diagram previousDiagram = diagramContext.getDiagram();
-        var optionalObject = this.objectService.getObject(editingContext, previousDiagram.getTargetObjectId());
-        // @formatter:off
-        var optionalDiagramDescription = this.representationDescriptionSearchService.findById(previousDiagram.getDescriptionId())
-                .filter(DiagramDescription.class::isInstance)
+    public Optional<Diagram> refresh(IEditingContext editingContext, ISemanticRepresentationMetadata metadata, IDiagramContext diagramContext) {
+        var optionalObject = this.objectService.getObject(editingContext, metadata.getTargetObjectId());
+        var optionalDiagramDescription = this.representationDescriptionSearchService.findById(metadata.getDescriptionId()).filter(DiagramDescription.class::isInstance)
                 .map(DiagramDescription.class::cast);
-        // @formatter:on
-
         if (optionalObject.isPresent() && optionalDiagramDescription.isPresent()) {
-            Object object = optionalObject.get();
-            DiagramDescription diagramDescription = optionalDiagramDescription.get();
-            Diagram diagram = this.doRender(previousDiagram.getLabel(), object, editingContext, diagramDescription, Optional.of(diagramContext));
+            Diagram diagram = this.doRender(metadata.getLabel(), metadata.getId(), optionalObject.get(), editingContext, optionalDiagramDescription.get(), metadata,
+                    Optional.ofNullable(diagramContext));
+            this.representationPersistenceService.save(editingContext, metadata, diagram);
             return Optional.of(diagram);
         }
         return Optional.empty();
     }
 
-    private Diagram doRender(String label, Object targetObject, IEditingContext editingContext, DiagramDescription diagramDescription, Optional<IDiagramContext> optionalDiagramContext) {
+    private Diagram doRender(String label, UUID diagramId, Object targetObject, IEditingContext editingContext, DiagramDescription diagramDescription, ISemanticRepresentationMetadata metadata,
+            Optional<IDiagramContext> optionalDiagramContext) {
         long start = System.currentTimeMillis();
 
         VariableManager variableManager = new VariableManager();
         variableManager.put(DiagramDescription.LABEL, label);
         variableManager.put(VariableManager.SELF, targetObject);
         variableManager.put(IEditingContext.EDITING_CONTEXT, editingContext);
+        // FIXME Remove this in a later patch when Diagram.id has been removed
+        variableManager.put("DIAGRAM_ID", diagramId); //$NON-NLS-1$
 
         Optional<IDiagramEvent> optionalDiagramElementEvent = optionalDiagramContext.map(IDiagramContext::getDiagramEvent);
         Optional<Diagram> optionalPreviousDiagram = optionalDiagramContext.map(IDiagramContext::getDiagram);
@@ -129,8 +132,7 @@ public class DiagramCreationService implements IDiagramCreationService {
             newDiagram = this.layoutService.incrementalLayout(newDiagram, optionalDiagramElementEvent);
         }
 
-        this.representationPersistenceService.save(editingContext, newDiagram);
-
+        this.representationPersistenceService.save(editingContext, metadata, newDiagram);
         long end = System.currentTimeMillis();
         this.timer.record(end - start, TimeUnit.MILLISECONDS);
         return newDiagram;

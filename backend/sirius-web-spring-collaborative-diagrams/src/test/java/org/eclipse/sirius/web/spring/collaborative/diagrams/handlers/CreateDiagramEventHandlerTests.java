@@ -27,7 +27,7 @@ import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
 import org.eclipse.sirius.web.diagrams.tests.TestDiagramBuilder;
 import org.eclipse.sirius.web.representations.IRepresentationDescription;
-import org.eclipse.sirius.web.representations.ISemanticRepresentation;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationPersistenceService;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramCreationService;
 import org.eclipse.sirius.web.spring.collaborative.dto.CreateRepresentationInput;
@@ -65,9 +65,9 @@ public class CreateDiagramEventHandlerTests {
         AtomicBoolean hasBeenCalled = new AtomicBoolean();
         IDiagramCreationService diagramCreationService = new IDiagramCreationService.NoOp() {
             @Override
-            public Diagram create(String label, Object targetObject, DiagramDescription diagramDescription, IEditingContext editingContext) {
+            public Optional<Diagram> create(IEditingContext editingContext, ISemanticRepresentationMetadata metadata) {
                 hasBeenCalled.set(true);
-                return new TestDiagramBuilder().getDiagram(UUID.randomUUID());
+                return Optional.of(new TestDiagramBuilder().getDiagram(UUID.randomUUID()));
             }
 
         };
@@ -79,11 +79,7 @@ public class CreateDiagramEventHandlerTests {
             }
         };
 
-        IRepresentationPersistenceService representationPersistenceService = new IRepresentationPersistenceService() {
-            @Override
-            public void save(IEditingContext editingContext, ISemanticRepresentation representation) {
-            }
-        };
+        IRepresentationPersistenceService representationPersistenceService = new IRepresentationPersistenceService.NoOp();
 
         CreateDiagramEventHandler handler = new CreateDiagramEventHandler(representationDescriptionSearchService, representationPersistenceService, diagramCreationService, objectService,
                 new NoOpCollaborativeDiagramMessageService(), new SimpleMeterRegistry());

@@ -27,7 +27,6 @@ import org.eclipse.sirius.web.diagrams.Size;
 import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
 import org.eclipse.sirius.web.diagrams.tests.TestDiagramDescriptionBuilder;
 import org.eclipse.sirius.web.representations.IRepresentation;
-import org.eclipse.sirius.web.representations.ISemanticRepresentation;
 import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationPersistenceService;
@@ -75,12 +74,7 @@ public class RenameDiagramEventHandlerTests {
             }
         };
 
-        IRepresentationPersistenceService representationPersistenceService = new IRepresentationPersistenceService() {
-
-            @Override
-            public void save(IEditingContext editingContext, ISemanticRepresentation representation) {
-            }
-        };
+        IRepresentationPersistenceService representationPersistenceService = new IRepresentationPersistenceService.NoOp();
 
         RenameDiagramEventHandler handler = new RenameDiagramEventHandler(representationSearchService, representationPersistenceService, new NoOpCollaborativeDiagramMessageService(),
                 new SimpleMeterRegistry());

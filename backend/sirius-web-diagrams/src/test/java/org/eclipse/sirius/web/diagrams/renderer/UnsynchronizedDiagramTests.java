@@ -129,6 +129,7 @@ public class UnsynchronizedDiagramTests {
 
     private Diagram render(DiagramDescription diagramDescription, List<ViewCreationRequest> viewCreationRequests, Optional<Diagram> optionalPreviousDiagram) {
         VariableManager variableManager = new VariableManager();
+        variableManager.put("DIAGRAM_ID", optionalPreviousDiagram.map(Diagram::getId).orElseGet(UUID::randomUUID)); //$NON-NLS-1$
         // @formatter:off
         DiagramComponentProps props = DiagramComponentProps.newDiagramComponentProps()
                 .variableManager(variableManager)

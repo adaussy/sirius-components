@@ -25,6 +25,7 @@ import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
 import org.eclipse.sirius.web.forms.Form;
 import org.eclipse.sirius.web.forms.description.FormDescription;
 import org.eclipse.sirius.web.representations.IRepresentationDescription;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeKind;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
@@ -106,8 +107,35 @@ public class CreateFormEventHandler implements IEditingContextEventHandler {
                             .pages(List.of()) // We don't store form pages, it will be re-render by the FormProcessor.
                             .build();
                     // @formatter:on
+                    ISemanticRepresentationMetadata formMetadata = new ISemanticRepresentationMetadata() {
 
-                    this.representationPersistenceService.save(editingContext, form);
+                        @Override
+                        public UUID getId() {
+                            return form.getId();
+                        }
+
+                        @Override
+                        public UUID getDescriptionId() {
+                            return representationDescription.getId();
+                        }
+
+                        @Override
+                        public String getLabel() {
+                            return form.getLabel();
+                        }
+
+                        @Override
+                        public String getKind() {
+                            return form.getKind();
+                        }
+
+                        @Override
+                        public String getTargetObjectId() {
+                            return form.getTargetObjectId();
+                        }
+                    };
+
+                    this.representationPersistenceService.save(editingContext, formMetadata, form);
 
                     return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_CREATION, editingContext.getId()), new CreateRepresentationSuccessPayload(input.getId(), form));
                 }

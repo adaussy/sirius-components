@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.sirius.web.components.Element;
 import org.eclipse.sirius.web.components.IComponent;
-import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.diagrams.Position;
 import org.eclipse.sirius.web.diagrams.Size;
 import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
@@ -48,7 +47,7 @@ public class DiagramComponent implements IComponent {
 
         String label = diagramDescription.getLabelProvider().apply(variableManager);
 
-        UUID diagramId = optionalPreviousDiagram.map(Diagram::getId).orElseGet(UUID::randomUUID);
+        UUID diagramId = variableManager.get("DIAGRAM_ID", UUID.class).orElseGet(UUID::randomUUID); //$NON-NLS-1$
         String targetObjectId = diagramDescription.getTargetObjectIdProvider().apply(variableManager);
 
         DiagramRenderingCache cache = new DiagramRenderingCache();

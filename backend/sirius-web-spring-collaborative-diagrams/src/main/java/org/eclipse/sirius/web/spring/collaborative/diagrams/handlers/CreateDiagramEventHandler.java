@@ -14,6 +14,7 @@ package org.eclipse.sirius.web.spring.collaborative.diagrams.handlers;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eclipse.sirius.web.core.api.ErrorPayload;
 import org.eclipse.sirius.web.core.api.IEditingContext;
@@ -22,6 +23,7 @@ import org.eclipse.sirius.web.core.api.IObjectService;
 import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
 import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeKind;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
@@ -101,14 +103,42 @@ public class CreateDiagramEventHandler implements IEditingContextEventHandler {
             Optional<Object> optionalObject = this.objectService.getObject(editingContext, createRepresentationInput.getObjectId());
 
             if (optionalDiagramDescription.isPresent() && optionalObject.isPresent()) {
-                DiagramDescription diagramDescription = optionalDiagramDescription.get();
-                Object object = optionalObject.get();
 
-                Diagram diagram = this.diagramCreationService.create(createRepresentationInput.getRepresentationName(), object, diagramDescription, editingContext);
+                UUID diagramId = UUID.randomUUID();
+                ISemanticRepresentationMetadata diagramMetadata = new ISemanticRepresentationMetadata() {
 
-                this.representationPersistenceService.save(editingContext, diagram);
+                    @Override
+                    public String getLabel() {
+                        return createRepresentationInput.getRepresentationName();
+                    }
 
-                return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_CREATION, editingContext.getId()), new CreateRepresentationSuccessPayload(input.getId(), diagram));
+                    @Override
+                    public String getKind() {
+                        return "Diagram"; //$NON-NLS-1$
+                    }
+
+                    @Override
+                    public UUID getId() {
+                        return diagramId;
+                    }
+
+                    @Override
+                    public UUID getDescriptionId() {
+                        return createRepresentationInput.getRepresentationDescriptionId();
+                    }
+
+                    @Override
+                    public String getTargetObjectId() {
+                        return createRepresentationInput.getObjectId();
+                    }
+                };
+
+                Optional<Diagram> optionalDiagram = this.diagramCreationService.create(editingContext, diagramMetadata);
+                if (optionalDiagram.isPresent()) {
+                    this.representationPersistenceService.save(editingContext, diagramMetadata, optionalDiagram.get());
+                    CreateRepresentationSuccessPayload payload = new CreateRepresentationSuccessPayload(input.getId(), optionalDiagram.get());
+                    return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_CREATION, editingContext.getId()), payload);
+                }
             }
         }
 
