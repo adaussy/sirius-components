@@ -98,7 +98,7 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
 
         EventHandlerResponse result;
         if (diagramInput instanceof DeleteFromDiagramInput) {
-            result = this.handleDelete(editingContext, diagramContext, (DeleteFromDiagramInput) diagramInput);
+            result = this.handleDelete(editingContext, diagramContext, diagramMetadata, (DeleteFromDiagramInput) diagramInput);
         } else {
             String message = this.messageService.invalidInput(diagramInput.getClass().getSimpleName(), DeleteFromDiagramInput.class.getSimpleName());
             result = new EventHandlerResponse(new ChangeDescription(ChangeKind.NOTHING, diagramInput.getRepresentationId()), new ErrorPayload(diagramInput.getId(), message));
@@ -106,14 +106,14 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
         return result;
     }
 
-    private EventHandlerResponse handleDelete(IEditingContext editingContext, IDiagramContext diagramContext, DeleteFromDiagramInput diagramInput) {
+    private EventHandlerResponse handleDelete(IEditingContext editingContext, IDiagramContext diagramContext, ISemanticRepresentationMetadata diagramMetadata, DeleteFromDiagramInput diagramInput) {
         List<String> errors = new ArrayList<>();
         boolean atLeastOneOk = false;
         Diagram diagram = diagramContext.getDiagram();
         for (UUID edgeId : diagramInput.getEdgeIds()) {
             var optionalElement = this.diagramQueryService.findEdgeById(diagram, edgeId);
             if (optionalElement.isPresent()) {
-                Status status = this.invokeDeleteEdgeTool(optionalElement.get(), editingContext, diagramContext);
+                Status status = this.invokeDeleteEdgeTool(optionalElement.get(), editingContext, diagramMetadata.getDescriptionId(), diagramContext);
                 if (Status.OK == status) {
                     atLeastOneOk = true;
                 }
@@ -125,7 +125,7 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
         for (UUID nodeId : diagramInput.getNodeIds()) {
             var optionalElement = this.diagramQueryService.findNodeById(diagram, nodeId);
             if (optionalElement.isPresent()) {
-                Status status = this.invokeDeleteNodeTool(optionalElement.get(), editingContext, diagramContext);
+                Status status = this.invokeDeleteNodeTool(optionalElement.get(), editingContext, diagramMetadata.getDescriptionId(), diagramContext);
                 if (Status.OK == status) {
                     atLeastOneOk = true;
                 }
@@ -159,9 +159,9 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
         return result;
     }
 
-    private Status invokeDeleteNodeTool(Node node, IEditingContext editingContext, IDiagramContext diagramContext) {
+    private Status invokeDeleteNodeTool(Node node, IEditingContext editingContext, UUID diagramDescriptionId, IDiagramContext diagramContext) {
         Status result = Status.ERROR;
-        var optionalNodeDescription = this.findNodeDescription(node, diagramContext.getDiagram());
+        var optionalNodeDescription = this.findNodeDescription(node, diagramDescriptionId);
         if (optionalNodeDescription.isPresent()) {
             var optionalSelf = this.objectService.getObject(editingContext, node.getTargetObjectId());
             if (optionalSelf.isPresent()) {
@@ -183,9 +183,9 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
         return result;
     }
 
-    private Status invokeDeleteEdgeTool(Edge edge, IEditingContext editingContext, IDiagramContext diagramContext) {
+    private Status invokeDeleteEdgeTool(Edge edge, IEditingContext editingContext, UUID diagramDescriptionId, IDiagramContext diagramContext) {
         Status result = Status.ERROR;
-        var optionalEdgeDescription = this.findEdgeDescription(edge, diagramContext.getDiagram());
+        var optionalEdgeDescription = this.findEdgeDescription(edge, diagramDescriptionId);
         if (optionalEdgeDescription.isPresent()) {
             var optionalSelf = this.objectService.getObject(editingContext, edge.getTargetObjectId());
             if (optionalSelf.isPresent()) {
@@ -214,20 +214,20 @@ public class DeleteFromDiagramEventHandler implements IDiagramEventHandler {
         return result;
     }
 
-    private Optional<NodeDescription> findNodeDescription(Node node, Diagram diagram) {
+    private Optional<NodeDescription> findNodeDescription(Node node, UUID diagramDescriptionId) {
         // @formatter:off
         return this.representationDescriptionSearchService
-                .findById(diagram.getDescriptionId())
+                .findById(diagramDescriptionId)
                 .filter(DiagramDescription.class::isInstance)
                 .map(DiagramDescription.class::cast)
                 .flatMap(diagramDescription -> this.diagramDescriptionService.findNodeDescriptionById(diagramDescription, node.getDescriptionId()));
         // @formatter:on
     }
 
-    private Optional<EdgeDescription> findEdgeDescription(Edge edge, Diagram diagram) {
+    private Optional<EdgeDescription> findEdgeDescription(Edge edge, UUID diagramDescriptionId) {
         // @formatter:off
         return this.representationDescriptionSearchService
-                .findById(diagram.getDescriptionId())
+                .findById(diagramDescriptionId)
                 .filter(DiagramDescription.class::isInstance)
                 .map(DiagramDescription.class::cast)
                 .flatMap(diagramDescription -> this.diagramDescriptionService.findEdgeDescriptionById(diagramDescription, edge.getDescriptionId()));

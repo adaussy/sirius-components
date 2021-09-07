@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.sirius.web.spring.collaborative.diagrams.handlers;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,8 +24,11 @@ import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
 import org.eclipse.sirius.web.diagrams.Diagram;
 import org.eclipse.sirius.web.diagrams.Node;
 import org.eclipse.sirius.web.diagrams.Position;
+import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
 import org.eclipse.sirius.web.diagrams.events.CreationEvent;
 import org.eclipse.sirius.web.diagrams.tools.CreateNodeTool;
+import org.eclipse.sirius.web.diagrams.tools.ITool;
+import org.eclipse.sirius.web.diagrams.tools.ToolSection;
 import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.representations.Status;
 import org.eclipse.sirius.web.representations.VariableManager;
@@ -36,7 +40,6 @@ import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramContext;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramEventHandler;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramInput;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramQueryService;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IToolService;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.dto.InvokeNodeToolOnDiagramInput;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.dto.InvokeNodeToolOnDiagramSuccessPayload;
 import org.eclipse.sirius.web.spring.collaborative.diagrams.messages.ICollaborativeDiagramMessageService;
@@ -57,19 +60,17 @@ public class InvokeNodeToolOnDiagramEventHandler implements IDiagramEventHandler
 
     private final IDiagramQueryService diagramQueryService;
 
-    private final IToolService toolService;
+    private final IRepresentationDescriptionSearchService representationDescriptionSearchService;
 
     private final ICollaborativeDiagramMessageService messageService;
 
     private final Counter counter;
 
-    private final IRepresentationDescriptionSearchService representationDescriptionSearchService;
-
-    public InvokeNodeToolOnDiagramEventHandler(IObjectService objectService, IDiagramQueryService diagramQueryService, IToolService toolService, ICollaborativeDiagramMessageService messageService,
-            MeterRegistry meterRegistry, IRepresentationDescriptionSearchService representationDescriptionSearchService) {
+    public InvokeNodeToolOnDiagramEventHandler(IObjectService objectService, IDiagramQueryService diagramQueryService, ICollaborativeDiagramMessageService messageService, MeterRegistry meterRegistry,
+            IRepresentationDescriptionSearchService representationDescriptionSearchService) {
         this.objectService = Objects.requireNonNull(objectService);
         this.diagramQueryService = Objects.requireNonNull(diagramQueryService);
-        this.toolService = Objects.requireNonNull(toolService);
+        this.representationDescriptionSearchService = Objects.requireNonNull(representationDescriptionSearchService);
         this.messageService = Objects.requireNonNull(messageService);
 
         // @formatter:off
@@ -77,8 +78,6 @@ public class InvokeNodeToolOnDiagramEventHandler implements IDiagramEventHandler
                 .tag(Monitoring.NAME, this.getClass().getSimpleName())
                 .register(meterRegistry);
         // @formatter:on
-
-        this.representationDescriptionSearchService = Objects.requireNonNull(representationDescriptionSearchService);
     }
 
     @Override
@@ -94,7 +93,7 @@ public class InvokeNodeToolOnDiagramEventHandler implements IDiagramEventHandler
             InvokeNodeToolOnDiagramInput input = (InvokeNodeToolOnDiagramInput) diagramInput;
             Diagram diagram = diagramContext.getDiagram();
             // @formatter:off
-            var optionalTool = this.toolService.findToolById(diagram, input.getToolId())
+            var optionalTool = this.findToolById(diagramMetadata.getDescriptionId(), input.getToolId())
                     .filter(CreateNodeTool.class::isInstance)
                     .map(CreateNodeTool.class::cast);
             // @formatter:on
@@ -109,6 +108,29 @@ public class InvokeNodeToolOnDiagramEventHandler implements IDiagramEventHandler
         }
         String message = this.messageService.invalidInput(diagramInput.getClass().getSimpleName(), InvokeNodeToolOnDiagramInput.class.getSimpleName());
         return new EventHandlerResponse(new ChangeDescription(ChangeKind.NOTHING, diagramInput.getRepresentationId()), new ErrorPayload(diagramInput.getId(), message));
+    }
+
+    private Optional<ITool> findToolById(UUID diagramDescriptionId, String toolId) {
+        // @formatter:off
+        var optionalDiagramDescription = this.representationDescriptionSearchService.findById(diagramDescriptionId)
+                                             .filter(DiagramDescription.class::isInstance)
+                                             .map(DiagramDescription.class::cast);
+        // @formatter:on
+        if (optionalDiagramDescription.isPresent()) {
+            return this.findToolById(optionalDiagramDescription.get(), toolId);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<ITool> findToolById(DiagramDescription diagramDescription, String toolId) {
+        // @formatter:off
+        return diagramDescription.getToolSections().stream()
+                                 .map(ToolSection::getTools)
+                                 .flatMap(Collection::stream)
+                                 .filter(tool -> Objects.equals(tool.getId(), toolId))
+                                 .findFirst();
+        // @formatter:on
     }
 
     private Status executeTool(IEditingContext editingContext, IDiagramContext diagramContext, UUID diagramElementId, CreateNodeTool tool, double startingPositionX, double startingPositionY,

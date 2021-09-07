@@ -96,7 +96,7 @@ public class EditLabelEventHandler implements IDiagramEventHandler {
             Diagram diagram = diagramContext.getDiagram();
             var node = this.diagramQueryService.findNodeByLabelId(diagram, UUID.fromString(input.getLabelId()));
             if (node.isPresent()) {
-                this.invokeDirectEditTool(node.get(), editingContext, diagram, input.getNewText());
+                this.invokeDirectEditTool(node.get(), editingContext, diagramMetadata.getDescriptionId(), input.getNewText());
                 return new EventHandlerResponse(new ChangeDescription(ChangeKind.SEMANTIC_CHANGE, diagramInput.getRepresentationId()), new EditLabelSuccessPayload(diagramInput.getId(), diagram));
             }
         }
@@ -105,8 +105,8 @@ public class EditLabelEventHandler implements IDiagramEventHandler {
         return new EventHandlerResponse(new ChangeDescription(ChangeKind.NOTHING, diagramInput.getRepresentationId()), new ErrorPayload(diagramInput.getId(), message));
     }
 
-    private void invokeDirectEditTool(Node node, IEditingContext editingContext, Diagram diagram, String newText) {
-        var optionalNodeDescription = this.findNodeDescription(node, diagram);
+    private void invokeDirectEditTool(Node node, IEditingContext editingContext, UUID diagramDescriptionId, String newText) {
+        var optionalNodeDescription = this.findNodeDescription(node, diagramDescriptionId);
         if (optionalNodeDescription.isPresent()) {
             NodeDescription nodeDescription = optionalNodeDescription.get();
 
@@ -122,10 +122,10 @@ public class EditLabelEventHandler implements IDiagramEventHandler {
         }
     }
 
-    private Optional<NodeDescription> findNodeDescription(Node node, Diagram diagram) {
+    private Optional<NodeDescription> findNodeDescription(Node node, UUID diagramDescriptionId) {
         // @formatter:off
         return this.representationDescriptionSearchService
-                .findById(diagram.getDescriptionId())
+                .findById(diagramDescriptionId)
                 .filter(DiagramDescription.class::isInstance)
                 .map(DiagramDescription.class::cast)
                 .flatMap(diagramDescription -> this.diagramDescriptionService.findNodeDescriptionById(diagramDescription, node.getDescriptionId()));
