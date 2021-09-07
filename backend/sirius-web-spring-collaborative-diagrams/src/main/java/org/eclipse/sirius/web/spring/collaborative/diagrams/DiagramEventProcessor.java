@@ -118,7 +118,7 @@ public class DiagramEventProcessor implements IDiagramEventProcessor {
 
             if (optionalDiagramEventHandler.isPresent()) {
                 IDiagramEventHandler diagramEventHandler = optionalDiagramEventHandler.get();
-                EventHandlerResponse eventHandlerResponse = diagramEventHandler.handle(this.editingContext, this.diagramContext, diagramInput);
+                EventHandlerResponse eventHandlerResponse = diagramEventHandler.handle(this.editingContext, this.diagramContext, this.diagramMetadata, diagramInput);
 
                 this.refresh(representationInput, eventHandlerResponse.getChangeDescription());
 

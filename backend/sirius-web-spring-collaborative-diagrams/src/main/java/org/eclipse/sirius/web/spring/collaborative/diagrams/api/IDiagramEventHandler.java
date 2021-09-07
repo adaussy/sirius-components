@@ -13,6 +13,7 @@
 package org.eclipse.sirius.web.spring.collaborative.diagrams.api;
 
 import org.eclipse.sirius.web.core.api.IEditingContext;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
 
 /**
@@ -24,6 +25,6 @@ public interface IDiagramEventHandler {
 
     boolean canHandle(IDiagramInput diagramInput);
 
-    EventHandlerResponse handle(IEditingContext editingContext, IDiagramContext diagramContext, IDiagramInput diagramInput);
+    EventHandlerResponse handle(IEditingContext editingContext, IDiagramContext diagramContext, ISemanticRepresentationMetadata diagramMetadata, IDiagramInput diagramInput);
 
 }

@@ -28,6 +28,7 @@ import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
 import org.eclipse.sirius.web.diagrams.tests.TestDiagramDescriptionBuilder;
 import org.eclipse.sirius.web.representations.IRepresentation;
 import org.eclipse.sirius.web.representations.ISemanticRepresentation;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationPersistenceService;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationSearchService;
@@ -88,7 +89,35 @@ public class RenameDiagramEventHandlerTests {
 
         assertThat(handler.canHandle(input)).isTrue();
 
-        EventHandlerResponse handlerResponse = handler.handle(new IEditingContext.NoOp(), new NoOpDiagramContext(), input);
+        ISemanticRepresentationMetadata diagramMetadata = new ISemanticRepresentationMetadata() {
+
+            @Override
+            public String getLabel() {
+                return OLD_LABEL;
+            }
+
+            @Override
+            public String getKind() {
+                return "Diagram"; //$NON-NLS-1$
+            }
+
+            @Override
+            public UUID getId() {
+                return representationId;
+            }
+
+            @Override
+            public UUID getDescriptionId() {
+                return UUID.randomUUID();
+            }
+
+            @Override
+            public String getTargetObjectId() {
+                return targetObjectId.toString();
+            }
+        };
+        EventHandlerResponse handlerResponse = handler.handle(new IEditingContext.NoOp(), new NoOpDiagramContext(), diagramMetadata, input);
+
         IPayload payload = handlerResponse.getPayload();
         assertThat(payload).isInstanceOf(RenameRepresentationSuccessPayload.class);
     }
