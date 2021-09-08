@@ -17,7 +17,6 @@ type DiagramRefreshedEventPayload {
 
 type Diagram implements Representation {
   id: ID!
-  label: String!
   kind: String!
   targetObjectId: ID!
   size: Size!

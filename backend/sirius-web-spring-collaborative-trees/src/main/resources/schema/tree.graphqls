@@ -17,7 +17,6 @@ type TreeRefreshedEventPayload {
 
 type Tree implements Representation {
   id: ID!
-  label: String!
   children: [TreeItem!]!
 }
 

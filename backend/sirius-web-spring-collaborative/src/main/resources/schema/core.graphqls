@@ -37,7 +37,6 @@ type RepresentationMetadata {
 
 interface Representation {
   id: ID!
-  label: String!
 }
 
 interface RepresentationDescription {

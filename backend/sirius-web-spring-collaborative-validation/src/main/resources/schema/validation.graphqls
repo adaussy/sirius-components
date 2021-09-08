@@ -16,7 +16,6 @@ type ValidationRefreshedEventPayload {
 
 type Validation implements Representation {
   id: ID!
-  label: String!
   diagnostics: [Diagnostic!]!
 }
 
