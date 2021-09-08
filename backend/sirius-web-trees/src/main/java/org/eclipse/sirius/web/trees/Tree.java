@@ -37,8 +37,6 @@ public final class Tree implements IRepresentation {
 
     private UUID id;
 
-    private String kind;
-
     private String label;
 
     private List<TreeItem> children;
@@ -53,13 +51,6 @@ public final class Tree implements IRepresentation {
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLField
-    @GraphQLNonNull
-    public String getKind() {
-        return this.kind;
     }
 
     @Override
@@ -94,8 +85,6 @@ public final class Tree implements IRepresentation {
     public static final class Builder {
         private UUID id;
 
-        private String kind = KIND;
-
         private String label;
 
         private List<TreeItem> children;
@@ -117,7 +106,6 @@ public final class Tree implements IRepresentation {
         public Tree build() {
             Tree tree = new Tree();
             tree.id = Objects.requireNonNull(this.id);
-            tree.kind = Objects.requireNonNull(this.kind);
             tree.label = Objects.requireNonNull(this.label);
             tree.children = Objects.requireNonNull(this.children);
             return tree;

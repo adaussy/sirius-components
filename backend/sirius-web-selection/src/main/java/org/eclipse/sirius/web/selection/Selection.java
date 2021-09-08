@@ -38,8 +38,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
     private UUID id;
 
-    private String kind;
-
     private String label;
 
     private String targetObjectId;
@@ -58,13 +56,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLField
-    @GraphQLNonNull
-    public String getKind() {
-        return this.kind;
     }
 
     @Override
@@ -111,8 +102,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
     public static final class Builder {
         private UUID id;
 
-        private String kind = KIND;
-
         private String label;
 
         private String targetObjectId;
@@ -148,7 +137,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
         public Selection build() {
             Selection selection = new Selection();
             selection.id = Objects.requireNonNull(this.id);
-            selection.kind = Objects.requireNonNull(this.kind);
             selection.label = Objects.requireNonNull(this.label);
             selection.targetObjectId = Objects.requireNonNull(this.targetObjectId);
             selection.message = this.message;

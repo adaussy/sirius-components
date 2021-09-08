@@ -59,9 +59,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
         return this.id;
     }
 
-    @Override
-    @GraphQLField
-    @GraphQLNonNull
     public String getKind() {
         return this.kind;
     }

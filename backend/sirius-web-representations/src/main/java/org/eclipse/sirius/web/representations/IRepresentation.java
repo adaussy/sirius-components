@@ -26,6 +26,4 @@ public interface IRepresentation {
     UUID getId();
 
     String getLabel();
-
-    String getKind();
 }

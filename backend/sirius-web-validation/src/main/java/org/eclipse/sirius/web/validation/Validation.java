@@ -37,8 +37,6 @@ public final class Validation implements IRepresentation {
 
     private UUID id;
 
-    private String kind;
-
     private String label;
 
     private List<Diagnostic> diagnostics;
@@ -60,13 +58,6 @@ public final class Validation implements IRepresentation {
     @GraphQLField
     public String getLabel() {
         return this.label;
-    }
-
-    @Override
-    @GraphQLNonNull
-    @GraphQLField
-    public String getKind() {
-        return this.kind;
     }
 
     @GraphQLNonNull
@@ -118,7 +109,6 @@ public final class Validation implements IRepresentation {
         public Validation build() {
             Validation validation = new Validation();
             validation.id = Objects.requireNonNull(this.id);
-            validation.kind = Objects.requireNonNull(this.kind);
             validation.label = Objects.requireNonNull(this.label);
             validation.diagnostics = Objects.requireNonNull(this.diagnostics);
             return validation;
