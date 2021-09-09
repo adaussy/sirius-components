@@ -107,6 +107,7 @@ export const Workbench = ({
       editingContextId,
       readOnly,
       representationId: displayedRepresentation.id,
+      label: displayedRepresentation.label,
       selection,
       setSelection,
     };
