@@ -5,7 +5,6 @@ subscription treeEvent($input: TreeEventInput!) {
       id
       tree {
         id
-        label
         children {
           ...treeItemFields
           children {
