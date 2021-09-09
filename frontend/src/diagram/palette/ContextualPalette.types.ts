@@ -16,6 +16,7 @@ export interface ContextualPaletteProps {
   toolSections: ToolSection[];
   targetElement: any;
   invokeTool: (tool: Tool) => void;
+  invokeMagicEdgeTool: () => void;
   invokeLabelEdit: () => void | null;
   invokeDelete: () => void | null;
   invokeClose: () => void;

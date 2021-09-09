@@ -36,3 +36,12 @@ export function canInvokeTool(tool, sourceElement, targetElement) {
   }
   return result;
 }
+export function atLeastOneCanInvokeEdgeTool(tools, sourceElement, targetElement) {
+  return tools.some((tool) =>
+    tool.edgeCandidates.some(
+      (edgeCandidate) =>
+        edgeCandidate.sources.some((source) => source.id === sourceElement.descriptionId) &&
+        edgeCandidate.targets.some((target) => target.id === targetElement.descriptionId)
+    )
+  );
+}

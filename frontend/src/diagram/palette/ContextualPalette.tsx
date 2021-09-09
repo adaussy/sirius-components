@@ -20,7 +20,14 @@ import styles from './ContextualPalette.module.css';
 import closeImagePath from './icons/close.svg';
 import deleteImagePath from './icons/delete.svg';
 import editImagePath from './icons/edit.svg';
+import magicEdgeImagePath from './icons/magicEdge.svg';
 
+const magicEdgeTool = {
+  id: 'magicEdge',
+  type: 'magicEdge',
+  imageURL: magicEdgeImagePath,
+  label: 'Magic Edge',
+};
 const editTool = {
   id: 'edit',
   type: 'edit',
@@ -49,10 +56,13 @@ export const ContextualPalette = ({
   toolSections,
   targetElement,
   invokeTool,
+  invokeMagicEdgeTool,
   invokeLabelEdit,
   invokeDelete,
   invokeClose,
 }: ContextualPaletteProps) => {
+  let magicToolContent;
+  let magicToolSeparator;
   let toolSectionsContent;
 
   const contextualToolSections = [];
@@ -71,6 +81,23 @@ export const ContextualPalette = ({
   });
 
   if (contextualToolSections.length > 0) {
+    const atLeastOneEdgeTool = contextualToolSections.some((toolSection) =>
+      toolSection.tools.some((tool) => tool.__typename === 'CreateEdgeTool')
+    );
+    if (atLeastOneEdgeTool) {
+      magicToolContent = (
+        <div className={styles.toolEntry}>
+          <Tool
+            tool={magicEdgeTool}
+            thumbnail={true}
+            onClick={() => {
+              invokeMagicEdgeTool();
+            }}
+          />
+        </div>
+      );
+      magicToolSeparator = <ToolSeparator />;
+    }
     toolSectionsContent = contextualToolSections.map((toolSection) => {
       return (
         <div className={styles.toolSectionEntry} key={targetElement.id + toolSection.id}>
@@ -110,6 +137,8 @@ export const ContextualPalette = ({
       <>
         <div className={styles.toolbar} data-testid={`PopupToolbar`}>
           <div className={styles.toolEntries}>
+            {magicToolContent}
+            {magicToolSeparator}
             {toolSectionsContent}
             {separator}
             {renameEntry}

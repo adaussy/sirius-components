@@ -35,6 +35,12 @@ export interface Palette {
   deletable: boolean;
 }
 
+export interface Menu {
+  canvasBounds: Bounds;
+  sourceElement: NodeDescription;
+  targetElement: NodeDescription;
+}
+
 export interface ToolSection {
   id: string;
   label: string;
@@ -47,6 +53,7 @@ export interface Tool {
   id: string;
   label: string;
   imageURL: string;
+  __typename: string;
 }
 
 export interface CreateNodeTool extends Tool {
@@ -65,6 +72,7 @@ export interface EdgeCandidate {
 
 export interface NodeDescription {
   id: string;
+  descriptionId: string;
 }
 
 export interface GQLGetToolSectionsVariables {}
