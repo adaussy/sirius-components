@@ -42,7 +42,7 @@ import { resizeFeature } from './resize/model';
  * @return a Sprotty diagram object
  */
 export const convertDiagram = (diagram, httpOrigin: string, autoLayout: boolean, readOnly: boolean) => {
-  const { id, kind, targetObjectId, label, position, size } = diagram;
+  const { id, kind, targetObjectId, position, size } = diagram;
   const nodes = diagram.nodes.map((node) => convertNode(node, httpOrigin, readOnly, autoLayout));
   const edges = diagram.edges.map((edge) => convertEdge(edge, httpOrigin, readOnly));
 
@@ -51,7 +51,6 @@ export const convertDiagram = (diagram, httpOrigin: string, autoLayout: boolean,
     kind,
     type: 'graph',
     targetObjectId,
-    label,
     position,
     features: createFeatureSet([hoverFeedbackFeature, viewportFeature]),
     size,

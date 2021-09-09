@@ -31,7 +31,6 @@ export const diagramEventSubscription = gql`
           id
           kind
           targetObjectId
-          label
           position {
             x
             y

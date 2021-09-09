@@ -41,7 +41,6 @@ describe('ModelConverter', () => {
       'kind',
       'type',
       'targetObjectId',
-      'label',
       'position',
       'features',
       'size',
@@ -53,7 +52,6 @@ describe('ModelConverter', () => {
     expect(sprottyDiagram.kind).toBe(siriusWebDiagram.kind);
     expect(sprottyDiagram.type).toBe('graph');
     expect(sprottyDiagram.targetObjectId).toBe(siriusWebDiagram.targetObjectId);
-    expect(sprottyDiagram.label).toBe(siriusWebDiagram.label);
     expect(sprottyDiagram.position).toBe(siriusWebDiagram.position);
     expect(sprottyDiagram.size).toBe(siriusWebDiagram.size);
 
