@@ -23,7 +23,6 @@ import org.eclipse.sirius.web.annotations.graphql.GraphQLID;
 import org.eclipse.sirius.web.annotations.graphql.GraphQLNonNull;
 import org.eclipse.sirius.web.annotations.graphql.GraphQLObjectType;
 import org.eclipse.sirius.web.representations.IRepresentation;
-import org.eclipse.sirius.web.representations.ISemanticRepresentation;
 
 /**
  * Root concept of the form representation.
@@ -33,7 +32,7 @@ import org.eclipse.sirius.web.representations.ISemanticRepresentation;
  */
 @Immutable
 @GraphQLObjectType
-public final class Form implements IRepresentation, ISemanticRepresentation {
+public final class Form implements IRepresentation {
 
     public static final String KIND = "Form"; //$NON-NLS-1$
 
@@ -69,7 +68,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
         return this.label;
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull

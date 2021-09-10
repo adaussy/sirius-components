@@ -13,7 +13,7 @@
 package org.eclipse.sirius.web.spring.collaborative.api;
 
 import org.eclipse.sirius.web.core.api.IEditingContext;
-import org.eclipse.sirius.web.representations.ISemanticRepresentation;
+import org.eclipse.sirius.web.representations.IRepresentation;
 import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
  */
 public interface IRepresentationPersistenceService {
 
-    void save(IEditingContext editingContext, ISemanticRepresentationMetadata representationMetadata, ISemanticRepresentation representation);
+    void save(IEditingContext editingContext, ISemanticRepresentationMetadata representationMetadata, IRepresentation representation);
 
     /**
      * Implementation which does nothing, used for mocks in unit tests.
@@ -33,7 +33,7 @@ public interface IRepresentationPersistenceService {
     class NoOp implements IRepresentationPersistenceService {
 
         @Override
-        public void save(IEditingContext editingContext, ISemanticRepresentationMetadata representationMetadata, ISemanticRepresentation representation) {
+        public void save(IEditingContext editingContext, ISemanticRepresentationMetadata representationMetadata, IRepresentation representation) {
             // Do nothing.
         }
     }
