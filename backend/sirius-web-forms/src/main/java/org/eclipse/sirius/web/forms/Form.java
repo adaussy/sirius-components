@@ -63,7 +63,6 @@ public final class Form implements IRepresentation, ISemanticRepresentation {
         return this.kind;
     }
 
-    @Override
     @GraphQLNonNull
     @GraphQLField
     public String getLabel() {
