@@ -50,7 +50,6 @@ public final class Form implements IRepresentation {
         // Prevent instantiation
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull

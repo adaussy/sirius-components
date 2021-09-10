@@ -43,7 +43,6 @@ public final class Validation implements IRepresentation {
         // Prevent instantiation
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull

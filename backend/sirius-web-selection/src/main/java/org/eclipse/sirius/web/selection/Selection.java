@@ -47,7 +47,6 @@ public final class Selection implements IRepresentation {
         // Prevent instantiation
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull

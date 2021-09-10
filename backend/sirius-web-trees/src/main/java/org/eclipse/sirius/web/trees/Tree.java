@@ -43,7 +43,6 @@ public final class Tree implements IRepresentation {
         // Prevent instantiation
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull

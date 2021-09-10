@@ -53,7 +53,6 @@ public final class Diagram implements IRepresentation {
         // Prevent instantiation
     }
 
-    @Override
     @GraphQLID
     @GraphQLField
     @GraphQLNonNull
