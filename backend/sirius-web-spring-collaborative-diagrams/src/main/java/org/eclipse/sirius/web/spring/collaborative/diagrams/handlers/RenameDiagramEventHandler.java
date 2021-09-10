@@ -113,7 +113,7 @@ public class RenameDiagramEventHandler implements IDiagramEventHandler {
                 this.representationPersistenceService.save(editingContext, renamedMetadata, diagram);
 
                 return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_RENAMING, renameRepresentationInput.getRepresentationId()),
-                        new RenameRepresentationSuccessPayload(diagramInput.getId(), diagram));
+                        new RenameRepresentationSuccessPayload(diagramInput.getId(), renamedMetadata));
             }
         }
         String message = this.messageService.invalidInput(diagramInput.getClass().getSimpleName(), RenameDiagramInput.class.getSimpleName());

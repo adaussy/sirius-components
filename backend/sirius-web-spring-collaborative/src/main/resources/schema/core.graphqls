@@ -286,7 +286,7 @@ union RenameRepresentationPayload = ErrorPayload | RenameRepresentationSuccessPa
 
 type RenameRepresentationSuccessPayload {
   id: ID!
-  representation: Representation!
+  representation: RepresentationMetadata!
 }
 
 input UploadDocumentInput {

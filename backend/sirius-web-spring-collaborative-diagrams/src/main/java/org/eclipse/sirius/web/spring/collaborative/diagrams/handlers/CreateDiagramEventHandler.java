@@ -136,7 +136,7 @@ public class CreateDiagramEventHandler implements IEditingContextEventHandler {
                 Optional<Diagram> optionalDiagram = this.diagramCreationService.create(editingContext, diagramMetadata);
                 if (optionalDiagram.isPresent()) {
                     this.representationPersistenceService.save(editingContext, diagramMetadata, optionalDiagram.get());
-                    CreateRepresentationSuccessPayload payload = new CreateRepresentationSuccessPayload(input.getId(), optionalDiagram.get());
+                    CreateRepresentationSuccessPayload payload = new CreateRepresentationSuccessPayload(input.getId(), diagramMetadata);
                     return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_CREATION, editingContext.getId()), payload);
                 }
             }
