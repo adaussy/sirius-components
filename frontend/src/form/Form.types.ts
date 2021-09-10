@@ -12,7 +12,6 @@
  *******************************************************************************/
 export interface Form {
   id: string;
-  label: string;
   pages: Page[];
 }
 

@@ -53,9 +53,16 @@ const usePropertiesStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Properties = ({ editingContextId, form, subscribers, widgetSubscriptions, readOnly }: FormProps) => {
+export const Properties = ({
+  editingContextId,
+  form,
+  label,
+  subscribers,
+  widgetSubscriptions,
+  readOnly,
+}: FormProps) => {
   const classes = usePropertiesStyles();
-  const { id, label, pages } = form;
+  const { id, pages } = form;
 
   let content;
   if (pages.length > 1) {

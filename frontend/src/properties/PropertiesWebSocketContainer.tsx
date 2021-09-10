@@ -138,6 +138,7 @@ export const PropertiesWebSocketContainer = ({
       <Properties
         editingContextId={editingContextId}
         form={form}
+        label={`${selection.kind} ${selection.label}`}
         subscribers={subscribers}
         widgetSubscriptions={widgetSubscriptions}
         readOnly={readOnly}

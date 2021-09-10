@@ -15,6 +15,7 @@ import { Form, Subscriber, WidgetSubscription } from 'form/Form.types';
 export interface FormProps {
   editingContextId: string;
   form: Form;
+  label: string;
   subscribers: Subscriber[];
   widgetSubscriptions: WidgetSubscription[];
   readOnly: boolean;

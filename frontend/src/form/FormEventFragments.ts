@@ -38,7 +38,6 @@ export const formRefreshedEventPayloadFragment = gql`
     id
     form {
       id
-      label
       pages {
         id
         label

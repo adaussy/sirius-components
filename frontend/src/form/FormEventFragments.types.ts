@@ -52,7 +52,6 @@ export interface GQLFormRefreshedEventPayload extends GQLFormEventPayload, GQLPr
 
 export interface GQLForm {
   id: string;
-  label: string;
   pages: GQLPage[];
 }
 

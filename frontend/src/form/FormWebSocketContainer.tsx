@@ -73,6 +73,7 @@ const useFormWebSocketContainerStyles = makeStyles((theme) => ({
 export const FormWebSocketContainer = ({
   editingContextId,
   representationId,
+  label,
   readOnly,
 }: RepresentationComponentProps) => {
   const classes = useFormWebSocketContainerStyles();
@@ -133,6 +134,7 @@ export const FormWebSocketContainer = ({
       <Properties
         editingContextId={editingContextId}
         form={form}
+        label={label}
         subscribers={subscribers}
         widgetSubscriptions={widgetSubscriptions}
         readOnly={readOnly}
