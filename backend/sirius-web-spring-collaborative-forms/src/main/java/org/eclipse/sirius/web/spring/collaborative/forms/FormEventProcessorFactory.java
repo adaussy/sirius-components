@@ -89,7 +89,7 @@ public class FormEventProcessorFactory implements IRepresentationEventProcessorF
                     FormDescription formDescription = optionalFormDescription.get();
                     Object object = optionalObject.get();
 
-                    IRepresentationEventProcessor formEventProcessor = new FormEventProcessor(editingContext, formDescription, formConfiguration.getId(), object, this.formEventHandlers,
+                    IRepresentationEventProcessor formEventProcessor = new FormEventProcessor(editingContext, formMetadata, formDescription, object, this.formEventHandlers,
                             this.subscriptionManagerFactory.create(), this.widgetSubscriptionManagerFactory.create());
 
                     // @formatter:off

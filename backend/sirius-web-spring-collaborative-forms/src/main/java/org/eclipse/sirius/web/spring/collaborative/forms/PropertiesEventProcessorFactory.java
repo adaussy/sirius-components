@@ -15,10 +15,13 @@ package org.eclipse.sirius.web.spring.collaborative.forms;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eclipse.sirius.web.core.api.IEditingContext;
 import org.eclipse.sirius.web.core.api.IObjectService;
+import org.eclipse.sirius.web.forms.Form;
 import org.eclipse.sirius.web.forms.description.FormDescription;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationConfiguration;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationEventProcessor;
 import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationEventProcessorFactory;
@@ -82,7 +85,34 @@ public class PropertiesEventProcessorFactory implements IRepresentationEventProc
                     optionalFormDescription = new FormDescriptionAggregator().aggregate(formDescriptions, object, this.objectService);
                 }
                 FormDescription formDescription = optionalFormDescription.orElse(this.propertiesDefaultDescriptionProvider.getFormDescription());
-                IRepresentationEventProcessor formEventProcessor = new FormEventProcessor(editingContext, formDescription, propertiesConfiguration.getId(), object, this.formEventHandlers,
+                ISemanticRepresentationMetadata propertiesMetadata = new ISemanticRepresentationMetadata() {
+
+                    @Override
+                    public String getLabel() {
+                        return PropertiesEventProcessorFactory.this.objectService.getFullLabel(object);
+                    }
+
+                    @Override
+                    public String getKind() {
+                        return Form.KIND;
+                    }
+
+                    @Override
+                    public UUID getId() {
+                        return propertiesConfiguration.getId();
+                    }
+
+                    @Override
+                    public UUID getDescriptionId() {
+                        return formDescription.getId();
+                    }
+
+                    @Override
+                    public String getTargetObjectId() {
+                        return propertiesConfiguration.getObjectId();
+                    }
+                };
+                IRepresentationEventProcessor formEventProcessor = new FormEventProcessor(editingContext, propertiesMetadata, formDescription, object, this.formEventHandlers,
                         this.subscriptionManagerFactory.create(), this.widgetSubscriptionManagerFactory.create());
 
                 // @formatter:off

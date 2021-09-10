@@ -30,6 +30,7 @@ import org.eclipse.sirius.web.forms.description.FormDescription;
 import org.eclipse.sirius.web.forms.renderer.FormRenderer;
 import org.eclipse.sirius.web.representations.GetOrCreateRandomIdProvider;
 import org.eclipse.sirius.web.representations.IRepresentation;
+import org.eclipse.sirius.web.representations.IRepresentationMetadata;
 import org.eclipse.sirius.web.representations.VariableManager;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeKind;
@@ -82,13 +83,16 @@ public class FormEventProcessor implements IFormEventProcessor {
 
     private final AtomicReference<Form> currentForm = new AtomicReference<>();
 
-    public FormEventProcessor(IEditingContext editingContext, FormDescription formDescription, UUID formId, Object object, List<IFormEventHandler> formEventHandlers,
+    private final IRepresentationMetadata formMetadata;
+
+    public FormEventProcessor(IEditingContext editingContext, IRepresentationMetadata formMetadata, FormDescription formDescription, Object object, List<IFormEventHandler> formEventHandlers,
             ISubscriptionManager subscriptionManager, IWidgetSubscriptionManager widgetSubscriptionManager) {
-        this.logger.trace("Creating the form event processor {}", formId); //$NON-NLS-1$
+        this.logger.trace("Creating the form event processor {}", formMetadata.getId()); //$NON-NLS-1$
 
         this.formDescription = Objects.requireNonNull(formDescription);
+        this.formMetadata = Objects.requireNonNull(formMetadata);
         this.editingContext = Objects.requireNonNull(editingContext);
-        this.formId = Objects.requireNonNull(formId);
+        this.formId = Objects.requireNonNull(formMetadata.getId());
         this.object = Objects.requireNonNull(object);
         this.formEventHandlers = Objects.requireNonNull(formEventHandlers);
         this.subscriptionManager = Objects.requireNonNull(subscriptionManager);
@@ -96,12 +100,16 @@ public class FormEventProcessor implements IFormEventProcessor {
 
         Form form = this.refreshForm();
         this.currentForm.set(form);
-
     }
 
     @Override
     public IRepresentation getRepresentation() {
         return this.currentForm.get();
+    }
+
+    @Override
+    public IRepresentationMetadata getRepresentationMetadata() {
+        return this.formMetadata;
     }
 
     @Override

@@ -70,8 +70,9 @@ public class SelectionEventProcessorFactory implements IRepresentationEventProce
             if (optionalSelectionDescription.isPresent() && optionalObject.isPresent()) {
                 SelectionDescription selectionDescription = optionalSelectionDescription.get();
                 Object object = optionalObject.get();
+                String label = this.objectService.getLabel(object);
 
-                IRepresentationEventProcessor selectionEventProcessor = new SelectionEventProcessor(editingContext, selectionDescription, selectionConfiguration.getId(), object,
+                IRepresentationEventProcessor selectionEventProcessor = new SelectionEventProcessor(editingContext, selectionDescription, selectionConfiguration.getId(), object, label,
                         this.subscriptionManagerFactory.create());
 
                 // @formatter:off

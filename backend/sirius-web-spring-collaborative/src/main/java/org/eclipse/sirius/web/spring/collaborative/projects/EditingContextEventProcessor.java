@@ -33,7 +33,8 @@ import org.eclipse.sirius.web.core.api.IObjectService;
 import org.eclipse.sirius.web.core.api.IPayload;
 import org.eclipse.sirius.web.core.api.IRepresentationInput;
 import org.eclipse.sirius.web.representations.IRepresentation;
-import org.eclipse.sirius.web.representations.ISemanticRepresentation;
+import org.eclipse.sirius.web.representations.IRepresentationMetadata;
+import org.eclipse.sirius.web.representations.ISemanticRepresentationMetadata;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.web.spring.collaborative.api.ChangeKind;
 import org.eclipse.sirius.web.spring.collaborative.api.EventHandlerResponse;
@@ -230,10 +231,10 @@ public class EditingContextEventProcessor implements IEditingContextEventProcess
      *            The representation that may be dangling
      * @return <code>true</code> whether the representation is dangling, <code>false</code> otherwise
      */
-    private boolean isDangling(IRepresentation representation) {
-        if (representation instanceof ISemanticRepresentation) {
-            ISemanticRepresentation semanticRepresentation = (ISemanticRepresentation) representation;
-            String targetObjectId = semanticRepresentation.getTargetObjectId();
+    private boolean isDangling(IRepresentationMetadata representationMetadata) {
+        if (representationMetadata instanceof ISemanticRepresentationMetadata) {
+            ISemanticRepresentationMetadata semanticRepresentationMetadata = (ISemanticRepresentationMetadata) representationMetadata;
+            String targetObjectId = semanticRepresentationMetadata.getTargetObjectId();
             Optional<Object> optionalObject = this.objectService.getObject(this.editingContext, targetObjectId);
             return optionalObject.isEmpty();
         }
@@ -246,15 +247,15 @@ public class EditingContextEventProcessor implements IEditingContextEventProcess
     private void disposeRepresentationIfNeeded() {
         List<RepresentationEventProcessorEntry> entriesToDispose = new ArrayList<>();
         for (var entry : this.representationEventProcessors.values()) {
-            if (this.isDangling(entry.getRepresentationEventProcessor().getRepresentation())) {
+            if (this.isDangling(entry.getRepresentationEventProcessor().getRepresentationMetadata())) {
                 entriesToDispose.add(entry);
             }
         }
         // @formatter:off
         entriesToDispose.stream()
             .map(RepresentationEventProcessorEntry::getRepresentationEventProcessor)
-            .map(IRepresentationEventProcessor::getRepresentation)
-            .map(IRepresentation::getId)
+            .map(IRepresentationEventProcessor::getRepresentationMetadata)
+            .map(IRepresentationMetadata::getId)
             .forEach(this::disposeRepresentation);
         // @formatter:on
     }

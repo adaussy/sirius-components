@@ -23,6 +23,7 @@ import org.eclipse.sirius.web.core.api.IPayload;
 import org.eclipse.sirius.web.core.api.IRepresentationInput;
 import org.eclipse.sirius.web.representations.GetOrCreateRandomIdProvider;
 import org.eclipse.sirius.web.representations.IRepresentation;
+import org.eclipse.sirius.web.representations.IRepresentationMetadata;
 import org.eclipse.sirius.web.representations.VariableManager;
 import org.eclipse.sirius.web.selection.Selection;
 import org.eclipse.sirius.web.selection.description.SelectionDescription;
@@ -69,7 +70,9 @@ public class SelectionEventProcessor implements ISelectionEventProcessor {
 
     private final AtomicReference<Selection> currentSelection = new AtomicReference<>();
 
-    public SelectionEventProcessor(IEditingContext editingContext, SelectionDescription selectionDescription, UUID id, Object object, ISubscriptionManager subscriptionManager) {
+    private final IRepresentationMetadata selectionMetadata;
+
+    public SelectionEventProcessor(IEditingContext editingContext, SelectionDescription selectionDescription, UUID id, Object object, String label, ISubscriptionManager subscriptionManager) {
         this.logger.trace("Creating the selection event processor {}", id); //$NON-NLS-1$
 
         this.selectionDescription = Objects.requireNonNull(selectionDescription);
@@ -80,12 +83,38 @@ public class SelectionEventProcessor implements ISelectionEventProcessor {
 
         Selection selection = this.refreshSelection();
         this.currentSelection.set(selection);
+        this.selectionMetadata = new IRepresentationMetadata() {
 
+            @Override
+            public String getLabel() {
+                return label;
+            }
+
+            @Override
+            public String getKind() {
+                return Selection.KIND;
+            }
+
+            @Override
+            public UUID getId() {
+                return id;
+            }
+
+            @Override
+            public UUID getDescriptionId() {
+                return selectionDescription.getId();
+            }
+        };
     }
 
     @Override
     public IRepresentation getRepresentation() {
         return this.currentSelection.get();
+    }
+
+    @Override
+    public IRepresentationMetadata getRepresentationMetadata() {
+        return this.selectionMetadata;
     }
 
     @Override
