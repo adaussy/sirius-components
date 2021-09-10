@@ -83,7 +83,6 @@ public class RenameDiagramEventHandler implements IDiagramEventHandler {
             if (optionalDiagram.isPresent()) {
                 Diagram diagram = optionalDiagram.get();
 
-                Diagram renamedDiagram = Diagram.newDiagram(diagram).label(newLabel).build();
                 ISemanticRepresentationMetadata renamedMetadata = new ISemanticRepresentationMetadata() {
 
                     @Override
@@ -111,11 +110,10 @@ public class RenameDiagramEventHandler implements IDiagramEventHandler {
                         return diagramMetadata.getTargetObjectId();
                     }
                 };
-                this.representationPersistenceService.save(editingContext, renamedMetadata, renamedDiagram);
-                diagramContext.update(renamedDiagram);
+                this.representationPersistenceService.save(editingContext, renamedMetadata, diagram);
 
                 return new EventHandlerResponse(new ChangeDescription(ChangeKind.REPRESENTATION_RENAMING, renameRepresentationInput.getRepresentationId()),
-                        new RenameRepresentationSuccessPayload(diagramInput.getId(), renamedDiagram));
+                        new RenameRepresentationSuccessPayload(diagramInput.getId(), diagram));
             }
         }
         String message = this.messageService.invalidInput(diagramInput.getClass().getSimpleName(), RenameDiagramInput.class.getSimpleName());

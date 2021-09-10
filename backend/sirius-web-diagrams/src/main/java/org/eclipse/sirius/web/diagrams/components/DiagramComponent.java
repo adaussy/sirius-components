@@ -45,8 +45,6 @@ public class DiagramComponent implements IComponent {
         DiagramDescription diagramDescription = this.props.getDiagramDescription();
         var optionalPreviousDiagram = this.props.getPreviousDiagram();
 
-        String label = diagramDescription.getLabelProvider().apply(variableManager);
-
         UUID diagramId = variableManager.get("DIAGRAM_ID", UUID.class).orElseGet(UUID::randomUUID); //$NON-NLS-1$
         String targetObjectId = diagramDescription.getTargetObjectIdProvider().apply(variableManager);
 
@@ -89,7 +87,6 @@ public class DiagramComponent implements IComponent {
         // @formatter:off
         DiagramElementProps diagramElementProps = DiagramElementProps.newDiagramElementProps(diagramId)
                 .targetObjectId(targetObjectId)
-                .label(label)
                 .position(Position.UNDEFINED)
                 .size(Size.UNDEFINED)
                 .children(children)

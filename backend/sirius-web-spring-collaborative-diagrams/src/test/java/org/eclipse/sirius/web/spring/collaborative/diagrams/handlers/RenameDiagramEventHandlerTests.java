@@ -52,7 +52,6 @@ public class RenameDiagramEventHandlerTests {
 
         // @formatter:off
         Diagram diagram = Diagram.newDiagram(representationId)
-                .label(OLD_LABEL)
                 .targetObjectId(targetObjectId.toString())
                 .size(Size.of(10, 10))
                 .position(Position.at(0, 0))

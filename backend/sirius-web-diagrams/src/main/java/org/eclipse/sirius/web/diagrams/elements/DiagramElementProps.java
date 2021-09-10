@@ -36,8 +36,6 @@ public final class DiagramElementProps implements IProps {
 
     private String targetObjectId;
 
-    private String label;
-
     private Position position;
 
     private Size size;
@@ -54,10 +52,6 @@ public final class DiagramElementProps implements IProps {
 
     public String getTargetObjectId() {
         return this.targetObjectId;
-    }
-
-    public String getLabel() {
-        return this.label;
     }
 
     public Position getPosition() {
@@ -94,8 +88,6 @@ public final class DiagramElementProps implements IProps {
 
         private String targetObjectId;
 
-        private String label;
-
         private Position position;
 
         private Size size;
@@ -108,11 +100,6 @@ public final class DiagramElementProps implements IProps {
 
         public Builder targetObjectId(String targetObjectId) {
             this.targetObjectId = Objects.requireNonNull(targetObjectId);
-            return this;
-        }
-
-        public Builder label(String label) {
-            this.label = Objects.requireNonNull(label);
             return this;
         }
 
@@ -135,7 +122,6 @@ public final class DiagramElementProps implements IProps {
             DiagramElementProps diagramElementProps = new DiagramElementProps();
             diagramElementProps.id = Objects.requireNonNull(this.id);
             diagramElementProps.targetObjectId = Objects.requireNonNull(this.targetObjectId);
-            diagramElementProps.label = Objects.requireNonNull(this.label);
             diagramElementProps.position = Objects.requireNonNull(this.position);
             diagramElementProps.size = Objects.requireNonNull(this.size);
             diagramElementProps.children = Objects.requireNonNull(this.children);
