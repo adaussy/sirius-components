@@ -18,5 +18,6 @@ package org.eclipse.sirius.web.representations;
  * @author gcoutable
  */
 public interface ISemanticRepresentation extends IRepresentation {
+    @Deprecated
     String getTargetObjectId();
 }

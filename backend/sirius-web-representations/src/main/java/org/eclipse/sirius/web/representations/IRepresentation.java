@@ -23,5 +23,6 @@ import org.eclipse.sirius.web.annotations.graphql.GraphQLInterfaceType;
  */
 @GraphQLInterfaceType(name = "Representation")
 public interface IRepresentation {
+    @Deprecated
     UUID getId();
 }
