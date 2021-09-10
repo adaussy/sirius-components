@@ -32,8 +32,6 @@ public final class ValidationElementProps implements IProps {
 
     private UUID id;
 
-    private String label;
-
     private List<Element> children;
 
     private ValidationElementProps() {
@@ -42,10 +40,6 @@ public final class ValidationElementProps implements IProps {
 
     public UUID getId() {
         return this.id;
-    }
-
-    public String getLabel() {
-        return this.label;
     }
 
     @Override
@@ -59,8 +53,8 @@ public final class ValidationElementProps implements IProps {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, label: {2}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label);
+        String pattern = "{0} '{'id: {1}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id);
     }
 
     /**
@@ -73,17 +67,10 @@ public final class ValidationElementProps implements IProps {
 
         private UUID id;
 
-        private String label;
-
         private List<Element> children;
 
         private Builder(UUID id) {
             this.id = Objects.requireNonNull(id);
-        }
-
-        public Builder label(String label) {
-            this.label = Objects.requireNonNull(label);
-            return this;
         }
 
         public Builder children(List<Element> children) {
@@ -94,7 +81,6 @@ public final class ValidationElementProps implements IProps {
         public ValidationElementProps build() {
             ValidationElementProps validationElementProps = new ValidationElementProps();
             validationElementProps.id = Objects.requireNonNull(this.id);
-            validationElementProps.label = Objects.requireNonNull(this.label);
             validationElementProps.children = Objects.requireNonNull(this.children);
             return validationElementProps;
         }

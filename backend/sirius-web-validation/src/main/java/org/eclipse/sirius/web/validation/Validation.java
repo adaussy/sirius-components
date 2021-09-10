@@ -37,8 +37,6 @@ public final class Validation implements IRepresentation {
 
     private UUID id;
 
-    private String label;
-
     private List<Diagnostic> diagnostics;
 
     private Validation() {
@@ -53,13 +51,6 @@ public final class Validation implements IRepresentation {
         return this.id;
     }
 
-    @Override
-    @GraphQLNonNull
-    @GraphQLField
-    public String getLabel() {
-        return this.label;
-    }
-
     @GraphQLNonNull
     @GraphQLField
     public List<@GraphQLNonNull Diagnostic> getDiagnostics() {
@@ -72,8 +63,8 @@ public final class Validation implements IRepresentation {
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, label: {2}, diagnosticCount: {3}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.label, this.diagnostics.size());
+        String pattern = "{0} '{'id: {1}, diagnosticCount: {2}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.diagnostics.size());
     }
 
     /**
@@ -88,17 +79,10 @@ public final class Validation implements IRepresentation {
 
         private String kind = KIND;
 
-        private String label;
-
         private List<Diagnostic> diagnostics;
 
         private Builder(UUID id) {
             this.id = Objects.requireNonNull(id);
-        }
-
-        public Builder label(String label) {
-            this.label = Objects.requireNonNull(label);
-            return this;
         }
 
         public Builder diagnostics(List<Diagnostic> diagnostics) {
@@ -109,7 +93,6 @@ public final class Validation implements IRepresentation {
         public Validation build() {
             Validation validation = new Validation();
             validation.id = Objects.requireNonNull(this.id);
-            validation.label = Objects.requireNonNull(this.label);
             validation.diagnostics = Objects.requireNonNull(this.diagnostics);
             return validation;
         }

@@ -38,8 +38,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
     private UUID id;
 
-    private String label;
-
     private String targetObjectId;
 
     private String message;
@@ -56,13 +54,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
     @GraphQLNonNull
     public UUID getId() {
         return this.id;
-    }
-
-    @Override
-    @GraphQLField
-    @GraphQLNonNull
-    public String getLabel() {
-        return this.label;
     }
 
     @Override
@@ -89,8 +80,8 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
     @Override
     public String toString() {
-        String pattern = "{0} '{'id: {1}, descriptionId: {2}, label: {3}, message: {4}, objectsCount: {5}'}'"; //$NON-NLS-1$
-        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.targetObjectId, this.label, this.message, this.objects.size());
+        String pattern = "{0} '{'id: {1}, descriptionId: {2}, message: {3}, objectsCount: {4}'}'"; //$NON-NLS-1$
+        return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id, this.targetObjectId, this.message, this.objects.size());
     }
 
     /**
@@ -102,8 +93,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
     public static final class Builder {
         private UUID id;
 
-        private String label;
-
         private String targetObjectId;
 
         private String message;
@@ -112,11 +101,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
 
         private Builder(UUID id) {
             this.id = Objects.requireNonNull(id);
-        }
-
-        public Builder label(String label) {
-            this.label = Objects.requireNonNull(label);
-            return this;
         }
 
         public Builder targetObjectId(String targetObjectId) {
@@ -137,7 +121,6 @@ public final class Selection implements IRepresentation, ISemanticRepresentation
         public Selection build() {
             Selection selection = new Selection();
             selection.id = Objects.requireNonNull(this.id);
-            selection.label = Objects.requireNonNull(this.label);
             selection.targetObjectId = Objects.requireNonNull(this.targetObjectId);
             selection.message = this.message;
             selection.objects = Objects.requireNonNull(this.objects);

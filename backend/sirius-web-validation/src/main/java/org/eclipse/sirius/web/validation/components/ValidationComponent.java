@@ -44,7 +44,6 @@ public class ValidationComponent implements IComponent {
         Optional<Validation> optionalPreviousValidation = this.props.getPreviousValidation();
 
         UUID id = optionalPreviousValidation.map(Validation::getId).orElseGet(() -> UUID.nameUUIDFromBytes("validation".getBytes())); //$NON-NLS-1$
-        String label = validationDescription.getLabel();
 
         List<Element> children = new ArrayList<>();
 
@@ -56,7 +55,6 @@ public class ValidationComponent implements IComponent {
 
         // @formatter:off
         ValidationElementProps validationElementProps = ValidationElementProps.newValidationElementProps(id)
-                .label(label)
                 .children(children)
                 .build();
         // @formatter:on
