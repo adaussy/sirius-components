@@ -33,6 +33,17 @@ import org.eclipse.sirius.components.representations.VariableManager;
 @Immutable
 public final class EdgeDescription {
     /**
+     * The name of the variables which points to the representation element at the source/origin of a particular edge.
+     */
+    public static final String EDGE_SOURCE = "edgeSource"; //$NON-NLS-1$
+
+    /**
+     * The name of the variables which points to the representation element at the destination/target of a particular
+     * edge.
+     */
+    public static final String EDGE_TARGET = "edgeTarget"; //$NON-NLS-1$
+
+    /**
      * The name of the variables which points to the semantic element at the source/origin of a particular edge.
      */
     public static final String SEMANTIC_EDGE_SOURCE = "semanticEdgeSource"; //$NON-NLS-1$
