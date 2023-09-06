@@ -10,14 +10,18 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.widget.reference;
+package org.eclipse.sirius.components.collaborative.widget.reference.dto;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 
 /**
- * Represents the metadata needed to identify the EMF feature (EReference) being edited by a Reference widget.
- * Needed for the frontend to subscribe to a Model Browser tree representation configured for this EReference.
+ * Input object for the mutation to handle the add of reference values (only used for multi-valued references).
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
-public record Reference(String typeName, String referenceKind, boolean containment, boolean manyValued) {
+public record AddReferenceValuesInput(UUID id, String editingContextId, String representationId, String referenceWidgetId, List<String> newValueIds) implements IFormInput {
 
 }

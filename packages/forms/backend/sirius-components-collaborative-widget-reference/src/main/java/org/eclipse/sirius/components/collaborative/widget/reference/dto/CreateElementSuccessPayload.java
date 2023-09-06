@@ -10,14 +10,20 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.widget.reference;
+package org.eclipse.sirius.components.collaborative.widget.reference.dto;
+
+import java.util.Objects;
+import java.util.UUID;
+
+import org.eclipse.sirius.components.core.api.IPayload;
 
 /**
- * Represents the metadata needed to identify the EMF feature (EReference) being edited by a Reference widget.
- * Needed for the frontend to subscribe to a Model Browser tree representation configured for this EReference.
+ * The payload of the create element mutation.
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
-public record Reference(String typeName, String referenceKind, boolean containment, boolean manyValued) {
-
+public record CreateElementSuccessPayload(UUID id, Object object) implements IPayload {
+    public CreateElementSuccessPayload {
+        Objects.requireNonNull(id);
+    }
 }

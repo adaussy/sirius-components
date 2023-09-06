@@ -10,14 +10,17 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.widget.reference;
+package org.eclipse.sirius.components.collaborative.widget.reference.dto;
+
+import java.util.UUID;
+
+import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 
 /**
- * Represents the metadata needed to identify the EMF feature (EReference) being edited by a Reference widget.
- * Needed for the frontend to subscribe to a Model Browser tree representation configured for this EReference.
+ * Input object for the mutation to clear the content of a reference.
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
-public record Reference(String typeName, String referenceKind, boolean containment, boolean manyValued) {
+public record ClearReferenceInput(UUID id, String editingContextId, String representationId, String referenceWidgetId) implements IFormInput {
 
 }

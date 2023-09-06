@@ -72,10 +72,18 @@ public class ReferenceWidgetDescriptor implements IWidgetDescriptor {
                     .iconURL(props.getIconURL())
                     .diagnostics(diagnostics)
                     .readOnly(props.isReadOnly())
-                    .setting(props.getSetting())
+                    .typeName(props.getTypeName())
+                    .referenceKind(props.getReferenceKind())
+                    .containment(props.isContainment())
+                    .many(props.isMany())
                     .referenceValues(props.getValues())
                     .referenceOptions(props.getOptions())
-                    .ownerId(props.getOwnerId());
+                    .ownerId(props.getOwnerId())
+                    .clearHandler(props.getClearHandler())
+                    .setHandler(props.getSetHandler())
+                    .addHandler(props.getAddHandler())
+                    .createElementHandler(props.getCreateElementHandler())
+                    .moveHandler(props.getMoveHandler());
             if (props.getHelpTextProvider() != null) {
                 builder.helpTextProvider(props.getHelpTextProvider());
             }

@@ -15,12 +15,15 @@ package org.eclipse.sirius.components.widget.reference;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.eclipse.emf.ecore.EStructuralFeature.Setting;
 import org.eclipse.sirius.components.annotations.Immutable;
 import org.eclipse.sirius.components.forms.AbstractWidget;
 import org.eclipse.sirius.components.forms.validation.Diagnostic;
+import org.eclipse.sirius.components.representations.IStatus;
+import org.eclipse.sirius.components.widget.reference.dto.CreateElementHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
 
 /**
  * A widget to view/edit an EMF reference.
@@ -34,11 +37,27 @@ public final class ReferenceWidget extends AbstractWidget {
 
     private List<ReferenceValue> referenceOptions;
 
-    private Setting setting;
+    private String typeName;
+
+    private String referenceKind;
+
+    private boolean containment;
+
+    private boolean many;
 
     private ReferenceWidgetStyle style;
 
     private String ownerId;
+
+    private Supplier<IStatus> clearHandler;
+
+    private Function<Object, IStatus> setHandler;
+
+    private Function<List<?>, IStatus> addHandler;
+
+    private Function<CreateElementHandlerInput, Object> createElementHandler;
+
+    private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
 
     private ReferenceWidget() {
         // Prevent instantiation
@@ -56,8 +75,20 @@ public final class ReferenceWidget extends AbstractWidget {
         return this.referenceOptions;
     }
 
-    public Setting getSetting() {
-        return this.setting;
+    public String getReferenceKind() {
+        return this.referenceKind;
+    }
+
+    public String getTypeName() {
+        return this.typeName;
+    }
+
+    public boolean isContainment() {
+        return this.containment;
+    }
+
+    public boolean isMany() {
+        return this.many;
     }
 
     public ReferenceWidgetStyle getStyle() {
@@ -66,6 +97,26 @@ public final class ReferenceWidget extends AbstractWidget {
 
     public String getOwnerId() {
         return this.ownerId;
+    }
+
+    public Supplier<IStatus> getClearHandler() {
+        return this.clearHandler;
+    }
+
+    public Function<Object, IStatus> getSetHandler() {
+        return this.setHandler;
+    }
+
+    public Function<List<?>, IStatus> getAddHandler() {
+        return this.addHandler;
+    }
+
+    public Function<CreateElementHandlerInput, Object> getCreateElementHandler() {
+        return this.createElementHandler;
+    }
+
+    public Function<MoveReferenceValueHandlerInput, IStatus> getMoveHandler() {
+        return this.moveHandler;
     }
 
     @Override
@@ -96,11 +147,27 @@ public final class ReferenceWidget extends AbstractWidget {
 
         private List<ReferenceValue> referenceOptions;
 
-        private Setting setting;
+        private String typeName;
+
+        private String referenceKind;
+
+        private boolean containment;
+
+        private boolean many;
 
         private ReferenceWidgetStyle style;
 
         private String ownerId;
+
+        private Supplier<IStatus> clearHandler;
+
+        private Function<Object, IStatus> setHandler;
+
+        private Function<List<?>, IStatus> addHandler;
+
+        private Function<CreateElementHandlerInput, Object> createElementHandler;
+
+        private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
 
         public Builder(String id) {
             this.id = Objects.requireNonNull(id);
@@ -141,8 +208,23 @@ public final class ReferenceWidget extends AbstractWidget {
             return this;
         }
 
-        public Builder setting(Setting setting) {
-            this.setting = Objects.requireNonNull(setting);
+        public Builder typeName(String typeName) {
+            this.typeName = Objects.requireNonNull(typeName);
+            return this;
+        }
+
+        public Builder referenceKind(String referenceKind) {
+            this.referenceKind = Objects.requireNonNull(referenceKind);
+            return this;
+        }
+
+        public Builder containment(boolean containment) {
+            this.containment = containment;
+            return this;
+        }
+
+        public Builder many(boolean many) {
+            this.many = many;
             return this;
         }
 
@@ -156,6 +238,31 @@ public final class ReferenceWidget extends AbstractWidget {
             return this;
         }
 
+        public Builder clearHandler(Supplier<IStatus> clearHandler) {
+            this.clearHandler = Objects.requireNonNull(clearHandler);
+            return this;
+        }
+
+        public Builder setHandler(Function<Object, IStatus> setHandler) {
+            this.setHandler = Objects.requireNonNull(setHandler);
+            return this;
+        }
+
+        public Builder addHandler(Function<List<?>, IStatus> addHandler) {
+            this.addHandler = Objects.requireNonNull(addHandler);
+            return this;
+        }
+
+        public Builder createElementHandler(Function<CreateElementHandlerInput, Object> createElementHandler) {
+            this.createElementHandler = Objects.requireNonNull(createElementHandler);
+            return this;
+        }
+
+        public Builder moveHandler(Function<MoveReferenceValueHandlerInput, IStatus> moveHandler) {
+            this.moveHandler = Objects.requireNonNull(moveHandler);
+            return this;
+        }
+
         public ReferenceWidget build() {
             ReferenceWidget referenceWidget = new ReferenceWidget();
             referenceWidget.id = Objects.requireNonNull(this.id);
@@ -164,11 +271,19 @@ public final class ReferenceWidget extends AbstractWidget {
             referenceWidget.diagnostics = Objects.requireNonNull(this.diagnostics);
             referenceWidget.referenceValues = Objects.requireNonNull(this.referenceValues);
             referenceWidget.referenceOptions = Objects.requireNonNull(this.referenceOptions);
-            referenceWidget.setting = Objects.requireNonNull(this.setting);
+            referenceWidget.typeName = Objects.requireNonNull(this.typeName);
+            referenceWidget.referenceKind = Objects.requireNonNull(this.referenceKind);
+            referenceWidget.containment = this.containment;
+            referenceWidget.many = this.many;
             referenceWidget.helpTextProvider = this.helpTextProvider; // Optional on purpose
             referenceWidget.readOnly = this.readOnly;
             referenceWidget.style = this.style; // Optional on purpose
             referenceWidget.ownerId = Objects.requireNonNull(this.ownerId);
+            referenceWidget.clearHandler = this.clearHandler; // Optional on purpose
+            referenceWidget.setHandler = this.setHandler; // Optional on purpose
+            referenceWidget.addHandler = this.addHandler; // Optional on purpose
+            referenceWidget.createElementHandler = this.createElementHandler; // Optional on purpose
+            referenceWidget.moveHandler = this.moveHandler; // Optional on purpose
             return referenceWidget;
         }
     }

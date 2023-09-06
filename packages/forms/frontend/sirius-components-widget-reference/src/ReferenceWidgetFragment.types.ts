@@ -34,7 +34,6 @@ export interface GQLReferenceWidgetStyle {
 export interface GQLReference {
   typeName: string;
   referenceKind: string;
-  referenceName: string;
   containment: boolean;
   manyValued: boolean;
 }
@@ -47,32 +46,12 @@ export interface GQLReferenceValue {
   hasClickAction: boolean;
 }
 
-export interface GQLEditReferencePayload {
-  __typename: string;
-}
-
-export interface GQLErrorPayload extends GQLEditReferencePayload {
+export interface GQLErrorPayload extends GQLClickReferenceValuePayload {
   messages: GQLMessage[];
 }
 
-export interface GQLSuccessPayload extends GQLEditReferencePayload {
+export interface GQLSuccessPayload extends GQLClickReferenceValuePayload {
   messages: GQLMessage[];
-}
-
-export interface GQLEditReferenceVariables {
-  input: GQLEditReferenceInput;
-}
-
-export interface GQLEditReferenceInput {
-  id: string;
-  editingContextId: string;
-  representationId: string;
-  referenceWidgetId: string;
-  newValueIds: Array<string>;
-}
-
-export interface GQLEditReferenceData {
-  editReference: GQLEditReferencePayload;
 }
 
 export interface GQLClickReferenceValueMutationData {
@@ -94,4 +73,105 @@ export interface GQLClickReferenceValueInput {
   referenceWidgetId: string;
   referenceValueId: string;
   clickEventKind: 'SINGLE_CLICK' | 'DOUBLE_CLICK';
+}
+
+export interface GQLClearReferenceMutationData {
+  clearReference: GQLClearReferencePayload;
+}
+
+export interface GQLClearReferencePayload {
+  __typename: string;
+}
+
+export interface GQLClearReferenceMutationVariables {
+  input: GQLClearReferenceInput;
+}
+
+export interface GQLClearReferenceInput {
+  id: string;
+  editingContextId: string;
+  representationId: string;
+  referenceWidgetId: string;
+}
+
+export interface GQLRemoveReferenceValueMutationData {
+  removeReferenceValue: GQLRemoveReferenceValuePayload;
+}
+
+export interface GQLRemoveReferenceValuePayload {
+  __typename: string;
+}
+
+export interface GQLRemoveReferenceValueMutationVariables {
+  input: GQLRemoveReferenceValueInput;
+}
+
+export interface GQLRemoveReferenceValueInput {
+  id: string;
+  editingContextId: string;
+  representationId: string;
+  referenceWidgetId: string;
+  referenceValueId: string;
+}
+
+export interface GQLSetReferenceValueMutationData {
+  setReferenceValue: GQLSetReferenceValuePayload;
+}
+
+export interface GQLSetReferenceValuePayload {
+  __typename: string;
+}
+
+export interface GQLSetReferenceValueMutationVariables {
+  input: GQLSetReferenceValueInput;
+}
+
+export interface GQLSetReferenceValueInput {
+  id: string;
+  editingContextId: string;
+  representationId: string;
+  referenceWidgetId: string;
+  newValueId: string;
+}
+
+export interface GQLAddReferenceValuesMutationData {
+  addReferenceValues: GQLAddReferenceValuesPayload;
+}
+
+export interface GQLAddReferenceValuesPayload {
+  __typename: string;
+}
+
+export interface GQLAddReferenceValuesMutationVariables {
+  input: GQLAddReferenceValuesInput;
+}
+
+export interface GQLAddReferenceValuesInput {
+  id: string;
+  editingContextId: string;
+  representationId: string;
+  referenceWidgetId: string;
+  newValueIds: Array<string>;
+}
+
+export interface GQLMoveReferenceValueMutationData {
+  moveReferenceValue: GQLMoveReferenceValuePayload;
+}
+
+export interface GQLMoveReferenceValuePayload {
+  __typename: string;
+}
+
+export interface GQLMoveReferenceValueMutationVariables {
+  input: GQLMoveReferenceValueInput;
+}
+
+export interface GQLMoveReferenceValueInput {
+  id: string;
+  editingContextId: string;
+  representationId: string;
+  referenceWidgetId: string;
+  referenceValueId: string;
+  fromIndex: number;
+  toIndex: number;
 }

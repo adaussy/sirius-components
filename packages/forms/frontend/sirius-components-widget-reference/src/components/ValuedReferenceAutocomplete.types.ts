@@ -13,8 +13,8 @@
 import { MutationFunction } from '@apollo/client';
 import React from 'react';
 import {
-  GQLEditReferenceData,
-  GQLEditReferenceVariables,
+  GQLClearReferenceMutationData,
+  GQLClearReferenceMutationVariables,
   GQLReferenceValue,
   GQLReferenceWidget,
 } from '../ReferenceWidgetFragment.types';
@@ -29,6 +29,9 @@ export interface ValuedReferenceAutocompleteProps {
   onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
   onMoreClick: (event: React.MouseEvent<Element, MouseEvent>) => void;
   onCreateClick: (event: React.MouseEvent<Element, MouseEvent>) => void;
-  editReference: MutationFunction<GQLEditReferenceData, GQLEditReferenceVariables>;
   optionClickHandler: (element: GQLReferenceValue) => void;
+  clearReference: MutationFunction<GQLClearReferenceMutationData, GQLClearReferenceMutationVariables>;
+  removeReferenceValue: (valueId: string) => void;
+  addReferenceValues: (newValueIds: string[]) => void;
+  setReferenceValue: (newValueId: string) => void;
 }

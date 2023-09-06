@@ -15,8 +15,8 @@ package org.eclipse.sirius.components.widget.reference;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import org.eclipse.emf.ecore.EStructuralFeature.Setting;
 import org.eclipse.sirius.components.forms.ClickEventKind;
 import org.eclipse.sirius.components.forms.components.FormComponent;
 import org.eclipse.sirius.components.forms.validation.DiagnosticComponent;
@@ -25,6 +25,8 @@ import org.eclipse.sirius.components.representations.Element;
 import org.eclipse.sirius.components.representations.IComponent;
 import org.eclipse.sirius.components.representations.IStatus;
 import org.eclipse.sirius.components.representations.VariableManager;
+import org.eclipse.sirius.components.widget.reference.dto.CreateElementHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
 
 /**
  * The component to render a reference widget.
@@ -33,9 +35,25 @@ import org.eclipse.sirius.components.representations.VariableManager;
  */
 public class ReferenceWidgetComponent implements IComponent {
 
+    public static final String NEW_VALUE = "newValue";
+
     public static final String ITEM_VARIABLE = "item";
 
+    public static final String MOVE_FROM_VARIABLE = "fromIndex";
+
+    public static final String MOVE_TO_VARIABLE = "toIndex";
+
     public static final String CLICK_EVENT_KIND_VARIABLE = "onClickEventKind";
+
+    public static final String DOCUMENT_ID_VARIABLE = "documentId";
+
+    public static final String DOMAIN_ID_VARIABLE = "domainId";
+
+    public static final String PARENT_VARIABLE = "parent";
+
+    public static final String CREATION_DESCRIPTION_ID_VARIABLE = "creationDescriptionId";
+
+    public static final String IS_CHILD_CREATION_VARIABLE = "isChildCreation";
 
     private final ReferenceWidgetComponentProps props;
 
@@ -60,11 +78,93 @@ public class ReferenceWidgetComponent implements IComponent {
         Boolean readOnly = referenceDescription.getIsReadOnlyProvider().apply(variableManager);
         String ownerId = referenceDescription.getOwnerIdProvider().apply(variableManager);
 
-        List<?> rawValue = referenceDescription.getItemsProvider().apply(variableManager);
-        List<?> rawOptions = referenceDescription.getOptionsProvider().apply(variableManager);
-        Setting setting = referenceDescription.getSettingProvider().apply(variableManager);
+        String typeName = referenceDescription.getTypeNameProvider().apply(variableManager);
+        String referenceKind = referenceDescription.getReferenceKindProvider().apply(variableManager);
+        boolean isContainment = referenceDescription.getIsContainmentProvider().apply(variableManager);
+        boolean isMany = referenceDescription.getIsManyProvider().apply(variableManager);
         ReferenceWidgetStyle style = referenceDescription.getStyleProvider().apply(variableManager);
 
+        List<ReferenceValue> items = this.getItems(variableManager, referenceDescription);
+
+        List<ReferenceValue> options = this.getOptions(variableManager, referenceDescription);
+
+        List<Element> children = List.of(new Element(DiagnosticComponent.class, new DiagnosticComponentProps(referenceDescription, variableManager)));
+
+        var builder = ReferenceElementProps.newReferenceElementProps(id)
+                .label(label)
+                .iconURL(iconURL)
+                .values(items)
+                .options(options)
+                .typeName(typeName)
+                .referenceKind(referenceKind)
+                .containment(isContainment)
+                .many(isMany)
+                .ownerId(ownerId)
+                .children(children)
+                .clearHandler(() -> {
+                    return referenceDescription.getClearHandlerProvider().apply(variableManager);
+                });
+        if (referenceDescription.getHelpTextProvider() != null) {
+            builder.helpTextProvider(() -> referenceDescription.getHelpTextProvider().apply(variableManager));
+        }
+        if (referenceDescription.getSetHandlerProvider() != null) {
+            Function<Object, IStatus> setHandler = object -> {
+                VariableManager childVariables = variableManager.createChild();
+                childVariables.put(NEW_VALUE, object);
+                return referenceDescription.getSetHandlerProvider().apply(childVariables);
+            };
+            builder.setHandler(setHandler);
+        }
+        if (referenceDescription.getAddHandlerProvider() != null) {
+            Function<List<?>, IStatus> addHandler = newValuesObjects -> {
+                VariableManager childVariableManager = variableManager.createChild();
+                childVariableManager.put(NEW_VALUE, newValuesObjects);
+                return referenceDescription.getAddHandlerProvider().apply(childVariableManager);
+            };
+            builder.addHandler(addHandler);
+        }
+        if (referenceDescription.getMoveHandlerProvider() != null) {
+            Function<MoveReferenceValueHandlerInput, IStatus> moveHandler = input -> {
+                VariableManager childVariableManager = variableManager.createChild();
+                childVariableManager.put(ITEM_VARIABLE, input.value());
+                childVariableManager.put(MOVE_FROM_VARIABLE, input.fromIndex());
+                childVariableManager.put(MOVE_TO_VARIABLE, input.toIndex());
+                return referenceDescription.getMoveHandlerProvider().apply(childVariableManager);
+            };
+            builder.moveHandler(moveHandler);
+        }
+        if (referenceDescription.getCreateElementHandlerProvider() != null) {
+            Function<CreateElementHandlerInput, Object> createElementHandler = input -> {
+                VariableManager childVariableManager = variableManager.createChild();
+                if (input.documentId() != null) {
+                    // root creation
+                    childVariableManager.put(IS_CHILD_CREATION_VARIABLE, false);
+                    childVariableManager.put(DOMAIN_ID_VARIABLE, input.domainId());
+                    childVariableManager.put(CREATION_DESCRIPTION_ID_VARIABLE, input.creationDescriptionId());
+                    childVariableManager.put(DOCUMENT_ID_VARIABLE, input.documentId());
+                } else {
+                    // child creation
+                    childVariableManager.put(IS_CHILD_CREATION_VARIABLE, true);
+                    childVariableManager.put(PARENT_VARIABLE, input.parent());
+                    childVariableManager.put(CREATION_DESCRIPTION_ID_VARIABLE, input.creationDescriptionId());
+                }
+                return referenceDescription.getCreateElementHandlerProvider().apply(childVariableManager);
+            };
+            builder.createElementHandler(createElementHandler);
+        }
+
+        if (readOnly != null) {
+            builder.readOnly(readOnly);
+        }
+        if (style != null) {
+            builder.style(style);
+        }
+
+        return new Element(ReferenceElementProps.TYPE, builder.build());
+    }
+
+    private List<ReferenceValue> getItems(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
+        List<?> rawValue = referenceDescription.getItemsProvider().apply(variableManager);
         List<ReferenceValue> items = rawValue.stream()
                 .map(object -> {
                     VariableManager childVariables = variableManager.createChild();
@@ -74,6 +174,7 @@ public class ReferenceWidgetComponent implements IComponent {
                     String itemImageURL = referenceDescription.getItemImageURLProvider().apply(childVariables);
                     String itemKind = referenceDescription.getItemKindProvider().apply(childVariables);
                     Function<VariableManager, IStatus> clickHandlerProvider = referenceDescription.getItemClickHandlerProvider();
+                    Function<VariableManager, IStatus> removeHandlerProvider = referenceDescription.getItemRemoveHandlerProvider();
 
                     var referenceValueBuilder = ReferenceValue.newReferenceValue(itemId)
                             .label(itemLabel)
@@ -87,10 +188,20 @@ public class ReferenceWidgetComponent implements IComponent {
                         };
                         referenceValueBuilder.clickHandler(clickHandler);
                     }
+                    if (removeHandlerProvider != null) {
+                        Supplier<IStatus> removeHandler = () -> {
+                            return removeHandlerProvider.apply(childVariables);
+                        };
+                        referenceValueBuilder.removeHandler(removeHandler);
+                    }
                     return referenceValueBuilder.build();
                 })
                 .toList();
+        return items;
+    }
 
+    private List<ReferenceValue> getOptions(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
+        List<?> rawOptions = referenceDescription.getOptionsProvider().apply(variableManager);
         List<ReferenceValue> options = rawOptions.stream()
                 .map(object -> {
                     VariableManager childVariables = variableManager.createChild();
@@ -107,28 +218,7 @@ public class ReferenceWidgetComponent implements IComponent {
                             .build();
                 })
                 .toList();
-
-        List<Element> children = List.of(new Element(DiagnosticComponent.class, new DiagnosticComponentProps(referenceDescription, variableManager)));
-
-        var builder = ReferenceElementProps.newReferenceElementProps(id)
-                .label(label)
-                .iconURL(iconURL)
-                .values(items)
-                .options(options)
-                .setting(setting)
-                .ownerId(ownerId)
-                .children(children);
-        if (referenceDescription.getHelpTextProvider() != null) {
-            builder.helpTextProvider(() -> referenceDescription.getHelpTextProvider().apply(variableManager));
-        }
-        if (readOnly != null) {
-            builder.readOnly(readOnly);
-        }
-        if (style != null) {
-            builder.style(style);
-        }
-
-        return new Element(ReferenceElementProps.TYPE, builder.build());
+        return options;
     }
 
 }

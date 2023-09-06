@@ -10,14 +10,17 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.widget.reference;
+package org.eclipse.sirius.components.widget.reference.dto;
+
+import java.util.UUID;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
- * Represents the metadata needed to identify the EMF feature (EReference) being edited by a Reference widget.
- * Needed for the frontend to subscribe to a Model Browser tree representation configured for this EReference.
+ * Input object to pass inputs to the createElementHandler field of ReferenceWidget.
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
-public record Reference(String typeName, String referenceKind, boolean containment, boolean manyValued) {
+public record CreateElementHandlerInput(UUID documentId, String domainId, EObject parent, String creationDescriptionId) {
 
 }
