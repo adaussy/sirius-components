@@ -49,7 +49,7 @@ public final class ReferenceWidgetDescription extends AbstractWidgetDescription 
 
     private Function<VariableManager, String> itemImageURLProvider;
 
-    private Function<VariableManager, String> typeNameProvider;
+    private Function<VariableManager, String> ownerKindProvider;
 
     private Function<VariableManager, String> referenceKindProvider;
 
@@ -119,8 +119,8 @@ public final class ReferenceWidgetDescription extends AbstractWidgetDescription 
         return this.itemImageURLProvider;
     }
 
-    public Function<VariableManager, String> getTypeNameProvider() {
-        return this.typeNameProvider;
+    public Function<VariableManager, String> getOwnerKindProvider() {
+        return this.ownerKindProvider;
     }
 
     public Function<VariableManager, String> getReferenceKindProvider() {
@@ -207,7 +207,7 @@ public final class ReferenceWidgetDescription extends AbstractWidgetDescription 
 
         private Function<VariableManager, String> itemImageURLProvider;
 
-        private Function<VariableManager, String> typeNameProvider;
+        private Function<VariableManager, String> ownerKindProvider;
 
         private Function<VariableManager, String> referenceKindProvider;
 
@@ -300,8 +300,8 @@ public final class ReferenceWidgetDescription extends AbstractWidgetDescription 
             return this;
         }
 
-        public Builder typeNameProvider(Function<VariableManager, String> typeNameProvider) {
-            this.typeNameProvider = Objects.requireNonNull(typeNameProvider);
+        public Builder ownerKindProvider(Function<VariableManager, String> ownerKindProvider) {
+            this.ownerKindProvider = Objects.requireNonNull(ownerKindProvider);
             return this;
         }
 
@@ -399,7 +399,7 @@ public final class ReferenceWidgetDescription extends AbstractWidgetDescription 
             referenceWidgetDescription.itemLabelProvider = Objects.requireNonNull(this.itemLabelProvider);
             referenceWidgetDescription.itemKindProvider = Objects.requireNonNull(this.itemKindProvider);
             referenceWidgetDescription.itemImageURLProvider = Objects.requireNonNull(this.itemImageURLProvider);
-            referenceWidgetDescription.typeNameProvider = Objects.requireNonNull(this.typeNameProvider);
+            referenceWidgetDescription.ownerKindProvider = Objects.requireNonNull(this.ownerKindProvider);
             referenceWidgetDescription.referenceKindProvider = Objects.requireNonNull(this.referenceKindProvider);
             referenceWidgetDescription.isContainmentProvider = Objects.requireNonNull(this.isContainmentProvider);
             referenceWidgetDescription.isManyProvider = Objects.requireNonNull(this.isManyProvider);

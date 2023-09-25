@@ -30,7 +30,7 @@ public class ReferenceWidgetReferenceDataFetcher implements IDataFetcherWithFiel
     @Override
     public Reference get(DataFetchingEnvironment environment) throws Exception {
         ReferenceWidget referenceWidget = environment.getSource();
-        return new Reference(referenceWidget.getTypeName(),
+        return new Reference(referenceWidget.getOwnerKind(),
                 referenceWidget.getReferenceKind(),
                 referenceWidget.isContainment(),
                 referenceWidget.isMany());

@@ -22,8 +22,8 @@ import org.eclipse.sirius.components.collaborative.api.Monitoring;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormEventHandler;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
-import org.eclipse.sirius.components.collaborative.forms.messages.ICollaborativeFormMessageService;
 import org.eclipse.sirius.components.collaborative.widget.reference.dto.AddReferenceValuesInput;
+import org.eclipse.sirius.components.collaborative.widget.reference.messages.IReferenceMessageService;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IObjectService;
@@ -50,13 +50,13 @@ import reactor.core.publisher.Sinks.One;
 public class AddReferenceValuesEventHandler implements IFormEventHandler {
     private final IFormQueryService formQueryService;
 
-    private final ICollaborativeFormMessageService messageService;
-
     private final IObjectService objectService;
+
+    private final IReferenceMessageService messageService;
 
     private final Counter counter;
 
-    public AddReferenceValuesEventHandler(IFormQueryService formQueryService, ICollaborativeFormMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
+    public AddReferenceValuesEventHandler(IFormQueryService formQueryService, IReferenceMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
         this.formQueryService = Objects.requireNonNull(formQueryService);
         this.messageService = Objects.requireNonNull(messageService);
         this.objectService = Objects.requireNonNull(objectService);
@@ -82,14 +82,14 @@ public class AddReferenceValuesEventHandler implements IFormEventHandler {
 
             IStatus status;
             if (optionalWidget.isPresent() && optionalWidget.get().isReadOnly()) {
-                status = new Failure("Read-only widget can not be edited");
+                status = new Failure(this.messageService.unableToEditReadOnlyWidget());
             } else {
                 status = this.callAddHandler(editingContext, optionalWidget, input.newValueIds());
             }
 
             if (status instanceof Success success) {
                 payload = new SuccessPayload(formInput.id(), success.getMessages());
-                changeDescription = new ChangeDescription(ChangeKind.SEMANTIC_CHANGE, formInput.representationId(), formInput);
+                changeDescription = new ChangeDescription(ChangeKind.SEMANTIC_CHANGE, formInput.representationId(), formInput, success.getParameters());
             } else if (status instanceof Failure failure) {
                 payload = new ErrorPayload(formInput.id(), failure.getMessages());
             }
@@ -104,7 +104,7 @@ public class AddReferenceValuesEventHandler implements IFormEventHandler {
 
         List<Object> values = this.resolve(editingContext, newValueIds);
         if (values.size() != newValueIds.size()) {
-            result = new Failure("Invalid id(s).");
+            result = new Failure(this.messageService.invalidIds());
         } else {
             result = optionalWidget.map(ReferenceWidget::getAddHandler).map(handler -> handler.apply(values)).orElse(new Failure(""));
         }

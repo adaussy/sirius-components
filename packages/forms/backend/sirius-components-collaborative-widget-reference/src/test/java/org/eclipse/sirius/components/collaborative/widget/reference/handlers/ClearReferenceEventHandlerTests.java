@@ -21,25 +21,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.sirius.components.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.components.collaborative.api.ChangeKind;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
-import org.eclipse.sirius.components.collaborative.widget.reference.dto.ClickReferenceValueInput;
+import org.eclipse.sirius.components.collaborative.widget.reference.dto.ClearReferenceInput;
 import org.eclipse.sirius.components.collaborative.widget.reference.messages.IReferenceMessageService;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IPayload;
 import org.eclipse.sirius.components.core.api.SuccessPayload;
 import org.eclipse.sirius.components.forms.AbstractWidget;
-import org.eclipse.sirius.components.forms.ClickEventKind;
 import org.eclipse.sirius.components.forms.Form;
 import org.eclipse.sirius.components.forms.Group;
 import org.eclipse.sirius.components.forms.Page;
 import org.eclipse.sirius.components.representations.IStatus;
 import org.eclipse.sirius.components.representations.Success;
-import org.eclipse.sirius.components.widget.reference.ReferenceValue;
 import org.eclipse.sirius.components.widget.reference.ReferenceWidget;
 import org.junit.jupiter.api.Test;
 
@@ -47,11 +45,11 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import reactor.core.publisher.Sinks;
 
 /**
- * Unit tests of the widget reference click event handlers.
+ * Unit tests of the widget reference clear event handler.
  *
- * @author frouene
+ * @author Jerome Gout
  */
-public class ClickReferenceValueEventHandlerTests {
+public class ClearReferenceEventHandlerTests {
 
     private static final UUID FORM_ID = UUID.randomUUID();
 
@@ -59,30 +57,23 @@ public class ClickReferenceValueEventHandlerTests {
     private static final String CHANGE_DESCRIPTION_PARAMETER_KEY = "change_description_parameter_key";
 
     @Test
-    public void testListItemSelection() {
+    public void testClearReference() {
         String referenceValueId = "ReferenceValue Id";
         String changeKind = ChangeKind.SEMANTIC_CHANGE;
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(CHANGE_DESCRIPTION_PARAMETER_KEY, referenceValueId);
-        var input = new ClickReferenceValueInput(UUID.randomUUID(), FORM_ID.toString(), UUID.randomUUID()
-                .toString(), REF_WIDGET_ID, referenceValueId, ClickEventKind.SINGLE_CLICK);
+        var input = new ClearReferenceInput(UUID.randomUUID(), FORM_ID.toString(), UUID.randomUUID().toString(), REF_WIDGET_ID);
 
         AtomicBoolean hasBeenExecuted = new AtomicBoolean();
-        Function<ClickEventKind, IStatus> clickHandler = (clickEventKind) -> {
+        Supplier<IStatus> clearHandler = () -> {
             hasBeenExecuted.set(true);
             return new Success(changeKind, parameters);
         };
 
-        ReferenceValue referenceValue = ReferenceValue.newReferenceValue(referenceValueId)
-                .label("")
-                .kind("")
-                .clickHandler(clickHandler)
-                .build();
-
         ReferenceWidget referenceWidget = ReferenceWidget.newReferenceWidget(referenceValueId)
                 .diagnostics(Collections.emptyList())
-                .referenceValues(Collections.singletonList(referenceValue))
+                .referenceValues(List.of())
                 .referenceOptions(List.of())
                 .label("")
                 .readOnly(false)
@@ -91,6 +82,7 @@ public class ClickReferenceValueEventHandlerTests {
                 .referenceKind("")
                 .many(false)
                 .containment(false)
+                .clearHandler(clearHandler)
                 .build();
 
         Group group = Group.newGroup("groupId")
@@ -117,7 +109,7 @@ public class ClickReferenceValueEventHandlerTests {
             }
         };
 
-        ClickReferenceValueEventHandler handler = new ClickReferenceValueEventHandler(formQueryService, new IReferenceMessageService.NoOp(), new SimpleMeterRegistry());
+        ClearReferenceEventHandler handler = new ClearReferenceEventHandler(formQueryService, new IReferenceMessageService.NoOp(), new SimpleMeterRegistry());
         assertThat(handler.canHandle(input)).isTrue();
 
         Sinks.Many<ChangeDescription> changeDescriptionSink = Sinks.many().unicast().onBackpressureBuffer();
@@ -137,38 +129,32 @@ public class ClickReferenceValueEventHandlerTests {
     }
 
     @Test
-    public void testListItemSelectionReadOnly() {
+    public void testClearReferenceReadOnly() {
         String referenceValueId = "ReferenceValue Id";
         String changeKind = ChangeKind.SEMANTIC_CHANGE;
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(CHANGE_DESCRIPTION_PARAMETER_KEY, referenceValueId);
-        var input = new ClickReferenceValueInput(UUID.randomUUID(), FORM_ID.toString(), UUID.randomUUID()
-                .toString(), REF_WIDGET_ID, referenceValueId, ClickEventKind.SINGLE_CLICK);
+        var input = new ClearReferenceInput(UUID.randomUUID(), FORM_ID.toString(), UUID.randomUUID().toString(), REF_WIDGET_ID);
 
         AtomicBoolean hasBeenExecuted = new AtomicBoolean();
-        Function<ClickEventKind, IStatus> clickHandler = (clickEventKind) -> {
+        Supplier<IStatus> clearHandler = () -> {
             hasBeenExecuted.set(true);
             return new Success(changeKind, parameters);
         };
 
-        ReferenceValue referenceValue = ReferenceValue.newReferenceValue(referenceValueId)
-                .label("")
-                .kind("")
-                .clickHandler(clickHandler)
-                .build();
-
         ReferenceWidget referenceWidget = ReferenceWidget.newReferenceWidget(referenceValueId)
                 .diagnostics(Collections.emptyList())
-                .referenceValues(Collections.singletonList(referenceValue))
+                .referenceValues(List.of())
                 .referenceOptions(List.of())
                 .label("")
                 .readOnly(true)
+                .ownerId("")
                 .ownerKind("")
                 .referenceKind("")
                 .many(false)
                 .containment(false)
-                .ownerId("")
+                .clearHandler(clearHandler)
                 .build();
 
         Group group = Group.newGroup("groupId")
@@ -202,7 +188,7 @@ public class ClickReferenceValueEventHandlerTests {
             }
         };
 
-        ClickReferenceValueEventHandler handler = new ClickReferenceValueEventHandler(formQueryService, messageService, new SimpleMeterRegistry());
+        ClearReferenceEventHandler handler = new ClearReferenceEventHandler(formQueryService, messageService, new SimpleMeterRegistry());
         assertThat(handler.canHandle(input)).isTrue();
 
         Sinks.Many<ChangeDescription> changeDescriptionSink = Sinks.many().unicast().onBackpressureBuffer();

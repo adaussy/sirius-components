@@ -38,7 +38,8 @@ export const ModelBrowserTreeView = ({
   enableMultiSelection,
   title,
   leafType,
-  typeName,
+  ownerKind,
+  formId,
 }: ModelBrowserTreeViewProps) => {
   const classes = useTreeStyle();
 
@@ -58,9 +59,11 @@ export const ModelBrowserTreeView = ({
           readOnly={true}
           selection={selection}
           setSelection={setSelection}
-          treeId={`modelBrowser://${leafType}?typeName=${encodeURIComponent(typeName)}&targetType=${encodeURIComponent(
-            widget.reference.referenceKind
-          )}&ownerId=${widget.ownerId}`}
+          treeId={`modelBrowser://${leafType}?ownerKind=${encodeURIComponent(
+            ownerKind
+          )}&targetType=${encodeURIComponent(widget.reference.referenceKind)}&ownerId=${
+            widget.ownerId
+          }&formId=${formId}&referenceId=${widget.id}`}
           enableMultiSelection={enableMultiSelection}
           synchronizedWithSelection={true}
           textToFilter={state.filterBarText}

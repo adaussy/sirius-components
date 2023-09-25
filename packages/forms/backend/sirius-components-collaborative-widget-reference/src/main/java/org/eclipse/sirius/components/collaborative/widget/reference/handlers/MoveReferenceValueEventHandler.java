@@ -21,8 +21,8 @@ import org.eclipse.sirius.components.collaborative.api.Monitoring;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormEventHandler;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
-import org.eclipse.sirius.components.collaborative.forms.messages.ICollaborativeFormMessageService;
 import org.eclipse.sirius.components.collaborative.widget.reference.dto.MoveReferenceValueInput;
+import org.eclipse.sirius.components.collaborative.widget.reference.messages.IReferenceMessageService;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IObjectService;
@@ -33,7 +33,7 @@ import org.eclipse.sirius.components.representations.Failure;
 import org.eclipse.sirius.components.representations.IStatus;
 import org.eclipse.sirius.components.representations.Success;
 import org.eclipse.sirius.components.widget.reference.ReferenceWidget;
-import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerParameters;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.core.instrument.Counter;
@@ -49,7 +49,7 @@ import reactor.core.publisher.Sinks.One;
 @Service
 public class MoveReferenceValueEventHandler implements IFormEventHandler {
 
-    private final ICollaborativeFormMessageService messageService;
+    private final IReferenceMessageService messageService;
 
     private final Counter counter;
 
@@ -57,7 +57,7 @@ public class MoveReferenceValueEventHandler implements IFormEventHandler {
 
     private final IObjectService objectService;
 
-    public MoveReferenceValueEventHandler(IFormQueryService formQueryService, ICollaborativeFormMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
+    public MoveReferenceValueEventHandler(IFormQueryService formQueryService, IReferenceMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
         this.formQueryService = Objects.requireNonNull(formQueryService);
         this.messageService = Objects.requireNonNull(messageService);
         this.objectService = Objects.requireNonNull(objectService);
@@ -88,9 +88,9 @@ public class MoveReferenceValueEventHandler implements IFormEventHandler {
 
             IStatus status;
             if (optionalReferenceWidget.map(ReferenceWidget::isReadOnly).filter(Boolean::booleanValue).isPresent()) {
-                status = new Failure("Read-only widget can not be edited");
+                status = new Failure(this.messageService.unableToEditReadOnlyWidget());
             } else {
-                Optional<MoveReferenceValueHandlerInput> handlerInput = this.getHandlerInput(editingContext, input);
+                Optional<MoveReferenceValueHandlerParameters> handlerInput = this.getHandlerInput(editingContext, input);
                 status = optionalReferenceWidget.map(ReferenceWidget::getMoveHandler)
                         .map(handler -> handler.apply(handlerInput.get()))
                         .orElse(new Failure(""));
@@ -107,9 +107,9 @@ public class MoveReferenceValueEventHandler implements IFormEventHandler {
         payloadSink.tryEmitValue(payload);
     }
 
-    private Optional<MoveReferenceValueHandlerInput> getHandlerInput(IEditingContext editingContext, MoveReferenceValueInput input) {
+    private Optional<MoveReferenceValueHandlerParameters> getHandlerInput(IEditingContext editingContext, MoveReferenceValueInput input) {
         return this.objectService.getObject(editingContext, input.referenceValueId()).flatMap(value -> {
-            return Optional.of(new MoveReferenceValueHandlerInput(value, input.fromIndex(), input.toIndex()));
+            return Optional.of(new MoveReferenceValueHandlerParameters(value, input.fromIndex(), input.toIndex()));
         });
     }
 

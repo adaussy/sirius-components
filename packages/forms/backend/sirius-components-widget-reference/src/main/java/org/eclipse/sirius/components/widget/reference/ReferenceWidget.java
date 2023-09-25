@@ -22,8 +22,8 @@ import org.eclipse.sirius.components.annotations.Immutable;
 import org.eclipse.sirius.components.forms.AbstractWidget;
 import org.eclipse.sirius.components.forms.validation.Diagnostic;
 import org.eclipse.sirius.components.representations.IStatus;
-import org.eclipse.sirius.components.widget.reference.dto.CreateElementHandlerInput;
-import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.CreateElementInReferenceHandlerParameters;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerParameters;
 
 /**
  * A widget to view/edit an EMF reference.
@@ -37,7 +37,7 @@ public final class ReferenceWidget extends AbstractWidget {
 
     private List<ReferenceValue> referenceOptions;
 
-    private String typeName;
+    private String ownerKind;
 
     private String referenceKind;
 
@@ -55,9 +55,11 @@ public final class ReferenceWidget extends AbstractWidget {
 
     private Function<List<?>, IStatus> addHandler;
 
-    private Function<CreateElementHandlerInput, Object> createElementHandler;
+    private Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler;
 
-    private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
+    private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
+
+    private Supplier<List<?>> candidatesSearchScope;
 
     private ReferenceWidget() {
         // Prevent instantiation
@@ -79,8 +81,8 @@ public final class ReferenceWidget extends AbstractWidget {
         return this.referenceKind;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public String getOwnerKind() {
+        return this.ownerKind;
     }
 
     public boolean isContainment() {
@@ -111,12 +113,16 @@ public final class ReferenceWidget extends AbstractWidget {
         return this.addHandler;
     }
 
-    public Function<CreateElementHandlerInput, Object> getCreateElementHandler() {
+    public Function<CreateElementInReferenceHandlerParameters, Object> getCreateElementHandler() {
         return this.createElementHandler;
     }
 
-    public Function<MoveReferenceValueHandlerInput, IStatus> getMoveHandler() {
+    public Function<MoveReferenceValueHandlerParameters, IStatus> getMoveHandler() {
         return this.moveHandler;
+    }
+
+    public Supplier<List<?>> getCandidatesSearchScope() {
+        return this.candidatesSearchScope;
     }
 
     @Override
@@ -147,7 +153,7 @@ public final class ReferenceWidget extends AbstractWidget {
 
         private List<ReferenceValue> referenceOptions;
 
-        private String typeName;
+        private String ownerKind;
 
         private String referenceKind;
 
@@ -165,9 +171,9 @@ public final class ReferenceWidget extends AbstractWidget {
 
         private Function<List<?>, IStatus> addHandler;
 
-        private Function<CreateElementHandlerInput, Object> createElementHandler;
+        private Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler;
 
-        private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
+        private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
 
         public Builder(String id) {
             this.id = Objects.requireNonNull(id);
@@ -208,8 +214,8 @@ public final class ReferenceWidget extends AbstractWidget {
             return this;
         }
 
-        public Builder typeName(String typeName) {
-            this.typeName = Objects.requireNonNull(typeName);
+        public Builder ownerKind(String ownerKind) {
+            this.ownerKind = Objects.requireNonNull(ownerKind);
             return this;
         }
 
@@ -253,12 +259,12 @@ public final class ReferenceWidget extends AbstractWidget {
             return this;
         }
 
-        public Builder createElementHandler(Function<CreateElementHandlerInput, Object> createElementHandler) {
+        public Builder createElementHandler(Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler) {
             this.createElementHandler = Objects.requireNonNull(createElementHandler);
             return this;
         }
 
-        public Builder moveHandler(Function<MoveReferenceValueHandlerInput, IStatus> moveHandler) {
+        public Builder moveHandler(Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler) {
             this.moveHandler = Objects.requireNonNull(moveHandler);
             return this;
         }
@@ -271,7 +277,7 @@ public final class ReferenceWidget extends AbstractWidget {
             referenceWidget.diagnostics = Objects.requireNonNull(this.diagnostics);
             referenceWidget.referenceValues = Objects.requireNonNull(this.referenceValues);
             referenceWidget.referenceOptions = Objects.requireNonNull(this.referenceOptions);
-            referenceWidget.typeName = Objects.requireNonNull(this.typeName);
+            referenceWidget.ownerKind = Objects.requireNonNull(this.ownerKind);
             referenceWidget.referenceKind = Objects.requireNonNull(this.referenceKind);
             referenceWidget.containment = this.containment;
             referenceWidget.many = this.many;

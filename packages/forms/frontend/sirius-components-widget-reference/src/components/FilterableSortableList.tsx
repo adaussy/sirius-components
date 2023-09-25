@@ -51,6 +51,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: 300,
     overflow: 'auto',
   },
+  dragIcon: {
+    display: 'block',
+  },
+  noDragIcon: {
+    display: 'none',
+  },
 }));
 const useLabelStyles = makeStyles((theme: Theme) => ({
   highlight: {
@@ -227,7 +233,7 @@ export const FilterableSortableList = ({
                   onMouseLeave={handleMouseLeave}
                   data-testid={label}>
                   <ListItemIcon
-                    style={{ display: `${hover ? 'block' : 'none'}` }}
+                    className={hover ? classes.dragIcon : classes.noDragIcon}
                     draggable
                     onDragStart={() => handleDragStartOrder(id, index)}
                     onDragEnd={handleDragEndOrder}>

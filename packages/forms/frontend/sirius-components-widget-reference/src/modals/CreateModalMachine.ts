@@ -16,9 +16,9 @@ import { assign, Machine } from 'xstate';
 import {
   ChildCreationDescription,
   Domain,
-  GQLCreateElementMutationData,
-  GQLCreateElementPayload,
-  GQLCreateElementSuccessPayload,
+  GQLCreateElementInReferenceMutationData,
+  GQLCreateElementInReferencePayload,
+  GQLCreateElementInReferenceSuccessPayload,
   GQLGetChildCreationDescriptionsQueryData,
   GQLGetDomainsQueryData,
   GQLGetRootObjectCreationDescriptionsQueryData,
@@ -100,7 +100,7 @@ export type CreateChildEvent = { type: 'CREATE_CHILD' };
 export type CreateRootEvent = { type: 'CREATE_ROOT' };
 export type HandleCreateElementResponseEvent = {
   type: 'HANDLE_CREATE_ELEMENT_RESPONSE';
-  data: GQLCreateElementMutationData;
+  data: GQLCreateElementInReferenceMutationData;
 };
 
 export type CreateModalEvent =
@@ -115,8 +115,10 @@ export type CreateModalEvent =
   | HandleCreateElementResponseEvent
   | ChangeContainerSelectionEvent;
 
-const isCreateElementSuccessPayload = (payload: GQLCreateElementPayload): payload is GQLCreateElementSuccessPayload => {
-  return payload.__typename === 'CreateElementSuccessPayload';
+const isCreateElementSuccessPayload = (
+  payload: GQLCreateElementInReferencePayload
+): payload is GQLCreateElementInReferenceSuccessPayload => {
+  return payload.__typename === 'CreateElementInReferenceSuccessPayload';
 };
 
 export const createModalMachine = Machine<CreateModalContext, CreateModalStateSchema, CreateModalEvent>(
@@ -324,7 +326,7 @@ export const createModalMachine = Machine<CreateModalContext, CreateModalStateSc
     guards: {
       isResponseCreateElementSuccessful: (_, event) => {
         const { data } = event as HandleCreateElementResponseEvent;
-        return data.createElement.__typename === 'CreateElementSuccessPayload';
+        return data.createElementInReference.__typename === 'CreateElementInReferenceSuccessPayload';
       },
       isContainmentReference: (_, event) => {
         const { containment } = event as ChangeContainmentModeEvent;
@@ -381,8 +383,8 @@ export const createModalMachine = Machine<CreateModalContext, CreateModalStateSc
       }),
       updateNewElementId: assign((_, event) => {
         const { data } = event as HandleCreateElementResponseEvent;
-        if (isCreateElementSuccessPayload(data.createElement)) {
-          const { object } = data.createElement;
+        if (isCreateElementSuccessPayload(data.createElementInReference)) {
+          const { object } = data.createElementInReference;
           return { newObjectId: object.id };
         }
         return {};

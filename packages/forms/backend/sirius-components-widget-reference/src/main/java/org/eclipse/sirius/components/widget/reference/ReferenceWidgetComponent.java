@@ -25,8 +25,8 @@ import org.eclipse.sirius.components.representations.Element;
 import org.eclipse.sirius.components.representations.IComponent;
 import org.eclipse.sirius.components.representations.IStatus;
 import org.eclipse.sirius.components.representations.VariableManager;
-import org.eclipse.sirius.components.widget.reference.dto.CreateElementHandlerInput;
-import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.CreateElementInReferenceHandlerParameters;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerParameters;
 
 /**
  * The component to render a reference widget.
@@ -78,7 +78,7 @@ public class ReferenceWidgetComponent implements IComponent {
         Boolean readOnly = referenceDescription.getIsReadOnlyProvider().apply(variableManager);
         String ownerId = referenceDescription.getOwnerIdProvider().apply(variableManager);
 
-        String typeName = referenceDescription.getTypeNameProvider().apply(variableManager);
+        String ownerKind = referenceDescription.getOwnerKindProvider().apply(variableManager);
         String referenceKind = referenceDescription.getReferenceKindProvider().apply(variableManager);
         boolean isContainment = referenceDescription.getIsContainmentProvider().apply(variableManager);
         boolean isMany = referenceDescription.getIsManyProvider().apply(variableManager);
@@ -95,17 +95,17 @@ public class ReferenceWidgetComponent implements IComponent {
                 .iconURL(iconURL)
                 .values(items)
                 .options(options)
-                .typeName(typeName)
+                .ownerKind(ownerKind)
                 .referenceKind(referenceKind)
                 .containment(isContainment)
                 .many(isMany)
                 .ownerId(ownerId)
-                .children(children)
-                .clearHandler(() -> {
-                    return referenceDescription.getClearHandlerProvider().apply(variableManager);
-                });
+                .children(children);
         if (referenceDescription.getHelpTextProvider() != null) {
             builder.helpTextProvider(() -> referenceDescription.getHelpTextProvider().apply(variableManager));
+        }
+        if (referenceDescription.getClearHandlerProvider() != null) {
+            builder.clearHandler(() -> referenceDescription.getClearHandlerProvider().apply(variableManager));
         }
         if (referenceDescription.getSetHandlerProvider() != null) {
             Function<Object, IStatus> setHandler = object -> {
@@ -124,7 +124,7 @@ public class ReferenceWidgetComponent implements IComponent {
             builder.addHandler(addHandler);
         }
         if (referenceDescription.getMoveHandlerProvider() != null) {
-            Function<MoveReferenceValueHandlerInput, IStatus> moveHandler = input -> {
+            Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler = input -> {
                 VariableManager childVariableManager = variableManager.createChild();
                 childVariableManager.put(ITEM_VARIABLE, input.value());
                 childVariableManager.put(MOVE_FROM_VARIABLE, input.fromIndex());
@@ -134,7 +134,7 @@ public class ReferenceWidgetComponent implements IComponent {
             builder.moveHandler(moveHandler);
         }
         if (referenceDescription.getCreateElementHandlerProvider() != null) {
-            Function<CreateElementHandlerInput, Object> createElementHandler = input -> {
+            Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler = input -> {
                 VariableManager childVariableManager = variableManager.createChild();
                 if (input.documentId() != null) {
                     // root creation
@@ -202,23 +202,20 @@ public class ReferenceWidgetComponent implements IComponent {
 
     private List<ReferenceValue> getOptions(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
         List<?> rawOptions = referenceDescription.getOptionsProvider().apply(variableManager);
-        List<ReferenceValue> options = rawOptions.stream()
-                .map(object -> {
-                    VariableManager childVariables = variableManager.createChild();
-                    childVariables.put(ReferenceWidgetComponent.ITEM_VARIABLE, object);
-                    String itemId = referenceDescription.getItemIdProvider().apply(childVariables);
-                    String itemLabel = referenceDescription.getItemLabelProvider().apply(childVariables);
-                    String itemImageURL = referenceDescription.getItemImageURLProvider().apply(childVariables);
-                    String itemKind = referenceDescription.getItemKindProvider().apply(childVariables);
+        return rawOptions.stream().map(object -> {
+            VariableManager childVariables = variableManager.createChild();
+            childVariables.put(ReferenceWidgetComponent.ITEM_VARIABLE, object);
+            String itemId = referenceDescription.getItemIdProvider().apply(childVariables);
+            String itemLabel = referenceDescription.getItemLabelProvider().apply(childVariables);
+            String itemImageURL = referenceDescription.getItemImageURLProvider().apply(childVariables);
+            String itemKind = referenceDescription.getItemKindProvider().apply(childVariables);
 
-                    return ReferenceValue.newReferenceValue(itemId)
-                            .label(itemLabel)
-                            .iconURL(itemImageURL)
-                            .kind(itemKind)
-                            .build();
-                })
-                .toList();
-        return options;
+            return ReferenceValue.newReferenceValue(itemId)
+                    .label(itemLabel)
+                    .iconURL(itemImageURL)
+                    .kind(itemKind)
+                    .build();
+        }).toList();
     }
 
 }

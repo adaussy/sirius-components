@@ -22,7 +22,7 @@ type ReferenceWidgetStyle {
 }
 
 type Reference {
-  typeName: String!
+  ownerKind: String!
   referenceKind: String!
   containment: Boolean!
   manyValued: Boolean!
@@ -42,7 +42,7 @@ extend type Mutation {
   removeReferenceValue(input: RemoveReferenceValueInput!): RemoveReferenceValuePayload!
   setReferenceValue(input: SetReferenceValueInput!): SetReferenceValuePayload!
   addReferenceValues(input: AddReferenceValuesInput!): AddReferenceValuesPayload!
-  createElement(input: CreateElementInput!): CreateElementPayload!
+  createElementInReference(input: CreateElementInReferenceInput!): CreateElementInReferencePayload!
   moveReferenceValue(input: MoveReferenceValueInput!): MoveReferenceValuePayload!
 }
 
@@ -96,7 +96,7 @@ input AddReferenceValuesInput {
 
 union AddReferenceValuesPayload = ErrorPayload | SuccessPayload
 
-input CreateElementInput {
+input CreateElementInReferenceInput {
   id: ID!
   editingContextId: ID!
   representationId: ID!
@@ -109,9 +109,9 @@ input CreateElementInput {
   creationDescriptionId: ID!
 }
 
-union CreateElementPayload = CreateElementSuccessPayload | ErrorPayload
+union CreateElementInReferencePayload = CreateElementInReferenceSuccessPayload | ErrorPayload
 
-type CreateElementSuccessPayload {
+type CreateElementInReferenceSuccessPayload {
   id: ID!
   object: Object!
 }

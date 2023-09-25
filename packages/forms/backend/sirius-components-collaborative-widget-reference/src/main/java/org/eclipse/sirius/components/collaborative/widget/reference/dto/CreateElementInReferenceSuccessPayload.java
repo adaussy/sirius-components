@@ -12,16 +12,19 @@
  *******************************************************************************/
 package org.eclipse.sirius.components.collaborative.widget.reference.dto;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
+import org.eclipse.sirius.components.core.api.IPayload;
 
 /**
- * Input object for the mutation to edit the content of a multi-valued reference.
+ * The payload of the create element mutation.
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
-public record EditReferenceInput(UUID id, String editingContextId, String representationId, String referenceWidgetId, List<String> newValueIds) implements IFormInput {
-
+public record CreateElementInReferenceSuccessPayload(UUID id, Object object) implements IPayload {
+    public CreateElementInReferenceSuccessPayload {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(object);
+    }
 }

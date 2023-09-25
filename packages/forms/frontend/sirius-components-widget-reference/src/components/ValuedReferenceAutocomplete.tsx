@@ -49,8 +49,6 @@ const useStyles = makeStyles<Theme, GQLReferenceWidgetStyle>((theme) => ({
 }));
 
 export const ValuedReferenceAutocomplete = ({
-  editingContextId,
-  formId,
   widget,
   readOnly,
   onDragEnter,
@@ -96,18 +94,6 @@ export const ValuedReferenceAutocomplete = ({
         setReferenceValue(newValueIds[0]);
       }
     }
-  };
-
-  const handleClearClick = () => {
-    const variables = {
-      input: {
-        id: crypto.randomUUID(),
-        editingContextId,
-        representationId: formId,
-        referenceWidgetId: widget.id,
-      },
-    };
-    clearReference({ variables });
   };
 
   let placeholder: string;
@@ -188,7 +174,7 @@ export const ValuedReferenceAutocomplete = ({
                     title="Clear"
                     disabled={readOnly || widget.readOnly}
                     data-testid={`${widget.label}-clear`}
-                    onClick={handleClearClick}>
+                    onClick={clearReference}>
                     <DeleteIcon />
                   </IconButton>
                 </InputAdornment>

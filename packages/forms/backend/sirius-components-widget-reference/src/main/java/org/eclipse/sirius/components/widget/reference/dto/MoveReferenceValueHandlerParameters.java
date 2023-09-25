@@ -10,20 +10,13 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.collaborative.widget.reference.dto;
-
-import java.util.Objects;
-import java.util.UUID;
-
-import org.eclipse.sirius.components.core.api.IPayload;
+package org.eclipse.sirius.components.widget.reference.dto;
 
 /**
- * The payload of the create element mutation.
+ * Input object to pass inputs to the moveHandler field of ReferenceWidget.
  *
  * @author Jerome Gout
  */
-public record CreateElementSuccessPayload(UUID id, Object object) implements IPayload {
-    public CreateElementSuccessPayload {
-        Objects.requireNonNull(id);
-    }
+public record MoveReferenceValueHandlerParameters(Object value, int fromIndex, int toIndex) {
+
 }

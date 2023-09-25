@@ -107,7 +107,7 @@ public class NonContainmentReferenceIfDescriptionProvider {
                 .itemKindProvider(this::getItemKind)
                 .itemLabelProvider(this::getItemLabel)
                 .itemImageURLProvider(this::getItemIconURL)
-                .typeNameProvider(this::getTypeName)
+                .ownerKindProvider(this::getTypeName)
                 .referenceKindProvider(this::getReferenceKind)
                 .isContainmentProvider(this::isContainment)
                 .isManyProvider(this::isMany)

@@ -15,11 +15,11 @@ import { GQLReferenceWidget } from '../ReferenceWidgetFragment.types';
 export interface CreateModalProps {
   editingContextId: string;
   widget: GQLReferenceWidget;
-  representationId: string;
+  formId: string;
   onClose: (newElementId: string) => void;
 }
 
-export interface GQLErrorPayload extends GQLCreateElementPayload {
+export interface GQLErrorPayload extends GQLCreateElementInReferencePayload {
   message: string;
 }
 
@@ -103,29 +103,29 @@ export interface GQLObject {
   kind: string;
 }
 
-export interface GQLCreateElementMutationVariables {
-  input: GQLCreateElementInput;
+export interface GQLCreateElementInReferenceMutationVariables {
+  input: GQLCreateElementInReferenceInput;
 }
 
-export interface GQLCreateElementInput {
+export interface GQLCreateElementInReferenceInput {
   id: string;
   editingContextId: string;
   representationId: string;
   referenceWidgetId: string;
   containerId: string;
-  domainId: string;
+  domainId: string | null;
   creationDescriptionId: string;
 }
 
-export interface GQLCreateElementMutationData {
-  createElement: GQLCreateElementPayload;
+export interface GQLCreateElementInReferenceMutationData {
+  createElementInReference: GQLCreateElementInReferencePayload;
 }
 
-export interface GQLCreateElementPayload {
+export interface GQLCreateElementInReferencePayload {
   __typename: string;
 }
 
-export interface GQLCreateElementSuccessPayload extends GQLCreateElementPayload {
+export interface GQLCreateElementInReferenceSuccessPayload extends GQLCreateElementInReferencePayload {
   id: string;
   object: GQLObject;
 }

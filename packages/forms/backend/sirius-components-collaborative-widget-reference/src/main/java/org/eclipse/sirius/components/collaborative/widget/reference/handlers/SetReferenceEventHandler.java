@@ -20,8 +20,8 @@ import org.eclipse.sirius.components.collaborative.api.Monitoring;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormEventHandler;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
-import org.eclipse.sirius.components.collaborative.forms.messages.ICollaborativeFormMessageService;
 import org.eclipse.sirius.components.collaborative.widget.reference.dto.SetReferenceValueInput;
+import org.eclipse.sirius.components.collaborative.widget.reference.messages.IReferenceMessageService;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IObjectService;
@@ -47,7 +47,7 @@ import reactor.core.publisher.Sinks.One;
 @Service
 public class SetReferenceEventHandler implements IFormEventHandler {
 
-    private final ICollaborativeFormMessageService messageService;
+    private final IReferenceMessageService messageService;
 
     private final Counter counter;
 
@@ -55,7 +55,7 @@ public class SetReferenceEventHandler implements IFormEventHandler {
 
     private final IObjectService objectService;
 
-    public SetReferenceEventHandler(IFormQueryService formQueryService, ICollaborativeFormMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
+    public SetReferenceEventHandler(IFormQueryService formQueryService, IReferenceMessageService messageService, IObjectService objectService, MeterRegistry meterRegistry) {
         this.formQueryService = Objects.requireNonNull(formQueryService);
         this.messageService = Objects.requireNonNull(messageService);
         this.objectService = Objects.requireNonNull(objectService);
@@ -86,7 +86,7 @@ public class SetReferenceEventHandler implements IFormEventHandler {
 
             IStatus status;
             if (optionalReferenceWidget.map(ReferenceWidget::isReadOnly).filter(Boolean::booleanValue).isPresent()) {
-                status = new Failure("Read-only widget can not be edited");
+                status = new Failure(this.messageService.unableToEditReadOnlyWidget());
             } else {
                 var value = this.objectService.getObject(editingContext, input.newValueId());
                 status = optionalReferenceWidget.map(ReferenceWidget::getSetHandler)

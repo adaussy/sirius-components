@@ -22,8 +22,8 @@ import org.eclipse.sirius.components.annotations.Immutable;
 import org.eclipse.sirius.components.representations.Element;
 import org.eclipse.sirius.components.representations.IProps;
 import org.eclipse.sirius.components.representations.IStatus;
-import org.eclipse.sirius.components.widget.reference.dto.CreateElementHandlerInput;
-import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerInput;
+import org.eclipse.sirius.components.widget.reference.dto.CreateElementInReferenceHandlerParameters;
+import org.eclipse.sirius.components.widget.reference.dto.MoveReferenceValueHandlerParameters;
 
 /**
  * The properties for the multi-valued reference widget element.
@@ -49,7 +49,7 @@ public final class ReferenceElementProps implements IProps {
 
     private List<ReferenceValue> options;
 
-    private String typeName;
+    private String ownerKind;
 
     private String referenceKind;
 
@@ -69,9 +69,9 @@ public final class ReferenceElementProps implements IProps {
 
     private Function<List<?>, IStatus> addHandler;
 
-    private Function<CreateElementHandlerInput, Object> createElementHandler;
+    private Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler;
 
-    private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
+    private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
 
     private ReferenceElementProps() {
         // Prevent instantiation
@@ -109,8 +109,8 @@ public final class ReferenceElementProps implements IProps {
         return this.options;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public String getOwnerKind() {
+        return this.ownerKind;
     }
 
     public String getReferenceKind() {
@@ -145,11 +145,11 @@ public final class ReferenceElementProps implements IProps {
         return this.addHandler;
     }
 
-    public Function<CreateElementHandlerInput, Object> getCreateElementHandler() {
+    public Function<CreateElementInReferenceHandlerParameters, Object> getCreateElementHandler() {
         return this.createElementHandler;
     }
 
-    public Function<MoveReferenceValueHandlerInput, IStatus> getMoveHandler() {
+    public Function<MoveReferenceValueHandlerParameters, IStatus> getMoveHandler() {
         return this.moveHandler;
     }
 
@@ -184,7 +184,7 @@ public final class ReferenceElementProps implements IProps {
 
         private List<ReferenceValue> options;
 
-        private String typeName;
+        private String ownerKind;
 
         private String referenceKind;
 
@@ -204,9 +204,9 @@ public final class ReferenceElementProps implements IProps {
 
         private Function<List<?>, IStatus> addHandler;
 
-        private Function<CreateElementHandlerInput, Object> createElementHandler;
+        private Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler;
 
-        private Function<MoveReferenceValueHandlerInput, IStatus> moveHandler;
+        private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
 
         private Builder(String id) {
             this.id = Objects.requireNonNull(id);
@@ -242,8 +242,8 @@ public final class ReferenceElementProps implements IProps {
             return this;
         }
 
-        public Builder typeName(String typeName) {
-            this.typeName = Objects.requireNonNull(typeName);
+        public Builder ownerKind(String ownerKind) {
+            this.ownerKind = Objects.requireNonNull(ownerKind);
             return this;
         }
 
@@ -292,12 +292,12 @@ public final class ReferenceElementProps implements IProps {
             return this;
         }
 
-        public Builder createElementHandler(Function<CreateElementHandlerInput, Object> createElementHandler) {
+        public Builder createElementHandler(Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler) {
             this.createElementHandler = Objects.requireNonNull(createElementHandler);
             return this;
         }
 
-        public Builder moveHandler(Function<MoveReferenceValueHandlerInput, IStatus> moveHandler) {
+        public Builder moveHandler(Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler) {
             this.moveHandler = Objects.requireNonNull(moveHandler);
             return this;
         }
@@ -310,7 +310,7 @@ public final class ReferenceElementProps implements IProps {
             referenceElementProps.readOnly = this.readOnly;
             referenceElementProps.values = Objects.requireNonNull(this.values);
             referenceElementProps.options = Objects.requireNonNull(this.options);
-            referenceElementProps.typeName = Objects.requireNonNull(this.typeName);
+            referenceElementProps.ownerKind = Objects.requireNonNull(this.ownerKind);
             referenceElementProps.referenceKind = Objects.requireNonNull(this.referenceKind);
             referenceElementProps.containment = this.containment;
             referenceElementProps.many = this.many;
@@ -318,7 +318,7 @@ public final class ReferenceElementProps implements IProps {
             referenceElementProps.style = this.style; // Optional on purpose
             referenceElementProps.ownerId = Objects.requireNonNull(this.ownerId);
             referenceElementProps.children = Objects.requireNonNull(this.children);
-            referenceElementProps.clearHandler = Objects.requireNonNull(this.clearHandler);
+            referenceElementProps.clearHandler = this.clearHandler; // Optional on purpose
             referenceElementProps.setHandler = this.setHandler; // Optional on purpose
             referenceElementProps.addHandler = this.addHandler; // Optional on purpose
             referenceElementProps.createElementHandler = this.createElementHandler;  // Optional on purpose

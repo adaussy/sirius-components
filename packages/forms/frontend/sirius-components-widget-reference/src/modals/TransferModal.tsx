@@ -50,6 +50,7 @@ export const TransferModal = ({
   addElements,
   removeElement,
   moveElement,
+  formId,
 }: TransferModalProps) => {
   const classes = useStyles();
   const [state, setState] = useState<TransferModalState>({
@@ -179,7 +180,8 @@ export const TransferModal = ({
                 enableMultiSelection={widget.reference.manyValued}
                 title={'Choices'}
                 leafType={'reference'}
-                typeName={widget.reference.typeName}
+                ownerKind={widget.reference.ownerKind}
+                formId={formId}
               />
             </div>
           </Grid>

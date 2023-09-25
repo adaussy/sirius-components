@@ -116,7 +116,7 @@ public class ReferenceWidgetDescriptionConverterSwitch extends ReferenceSwitch<A
                 .optionsProvider(variableManager -> this.getReferenceOptions(referenceDescription, variableManager))
                 .itemIdProvider(this::getItemId).itemKindProvider(this::getItemKind)
                 .itemLabelProvider(this::getItemLabel).itemImageURLProvider(this::getItemIconURL)
-                .typeNameProvider(variableManager -> this.getTypeName(variableManager, referenceDescription))
+                .ownerKindProvider(variableManager -> this.getOwnerKind(variableManager, referenceDescription))
                 .referenceKindProvider(variableManager -> this.getReferenceKind(variableManager, referenceDescription))
                 .isContainmentProvider(variableManager -> this.isContainment(variableManager, referenceDescription))
                 .isManyProvider(variableManager -> this.isMany(variableManager, referenceDescription))
@@ -389,39 +389,29 @@ public class ReferenceWidgetDescriptionConverterSwitch extends ReferenceSwitch<A
         return result;
     }
 
-    private String getTypeName(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
+    private Optional<EReference> getReference(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
         EObject owner = this.getReferenceOwner(variableManager, referenceDescription.getReferenceOwnerExpression());
         String referenceName = this.getStringValueProvider(referenceDescription.getReferenceNameExpression()).apply(variableManager);
-        if (owner != null && owner.eClass().getEStructuralFeature(referenceName) instanceof EReference reference) {
-            return this.emfKindService.getKind(reference.getEContainingClass());
-        }
-        return "";
+        return Optional.ofNullable(owner)
+                       .map(EObject::eClass)
+                       .map(klass -> klass.getEStructuralFeature(referenceName))
+                       .filter(EReference.class::isInstance)
+                       .map(EReference.class::cast);
+    }
+
+    private String getOwnerKind(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
+        return this.getReference(variableManager, referenceDescription).flatMap(reference -> Optional.of(this.emfKindService.getKind(reference.getEContainingClass()))).orElse("");
     }
 
     private String getReferenceKind(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
-        EObject owner = this.getReferenceOwner(variableManager, referenceDescription.getReferenceOwnerExpression());
-        String referenceName = this.getStringValueProvider(referenceDescription.getReferenceNameExpression()).apply(variableManager);
-        if (owner != null && owner.eClass().getEStructuralFeature(referenceName) instanceof EReference reference) {
-            return this.emfKindService.getKind(reference.getEReferenceType());
-        }
-        return "";
+        return this.getReference(variableManager, referenceDescription).flatMap(reference -> Optional.of(this.emfKindService.getKind(reference.getEReferenceType()))).orElse("");
     }
 
     private boolean isContainment(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
-        EObject owner = this.getReferenceOwner(variableManager, referenceDescription.getReferenceOwnerExpression());
-        String referenceName = this.getStringValueProvider(referenceDescription.getReferenceNameExpression()).apply(variableManager);
-        if (owner != null && owner.eClass().getEStructuralFeature(referenceName) instanceof EReference reference) {
-            return reference.isContainment();
-        }
-        return false;
+        return this.getReference(variableManager, referenceDescription).flatMap(reference -> Optional.of(reference.isContainment())).orElse(false);
     }
 
     private boolean isMany(VariableManager variableManager, ReferenceWidgetDescription referenceDescription) {
-        EObject owner = this.getReferenceOwner(variableManager, referenceDescription.getReferenceOwnerExpression());
-        String referenceName = this.getStringValueProvider(referenceDescription.getReferenceNameExpression()).apply(variableManager);
-        if (owner != null && owner.eClass().getEStructuralFeature(referenceName) instanceof EReference reference) {
-            return reference.isMany();
-        }
-        return false;
+        return this.getReference(variableManager, referenceDescription).flatMap(reference -> Optional.of(reference.isMany())).orElse(false);
     }
 }

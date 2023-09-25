@@ -27,9 +27,10 @@ import { useContext, useEffect } from 'react';
 import { ModelBrowserTreeView } from '../components/ModelBrowserTreeView';
 import {
   CreateModalProps,
-  GQLCreateElementMutationData,
-  GQLCreateElementMutationVariables,
-  GQLCreateElementPayload,
+  GQLCreateElementInReferenceInput,
+  GQLCreateElementInReferenceMutationData,
+  GQLCreateElementInReferenceMutationVariables,
+  GQLCreateElementInReferencePayload,
   GQLErrorPayload,
   GQLGetChildCreationDescriptionsQueryData,
   GQLGetChildCreationDescriptionsQueryVariables,
@@ -69,11 +70,11 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const createElementMutation = gql`
-  mutation createElement($input: CreateElementInput!) {
-    createElement(input: $input) {
+const createElementInReferenceMutation = gql`
+  mutation createElementInReference($input: CreateElementInReferenceInput!) {
+    createElementInReference(input: $input) {
       __typename
-      ... on CreateElementSuccessPayload {
+      ... on CreateElementInReferenceSuccessPayload {
         object {
           id
           label
@@ -133,10 +134,10 @@ const getDomainsQuery = gql`
   }
 `;
 
-const isErrorPayload = (payload: GQLCreateElementPayload): payload is GQLErrorPayload =>
+const isErrorPayload = (payload: GQLCreateElementInReferencePayload): payload is GQLErrorPayload =>
   payload.__typename === 'ErrorPayload';
 
-export const CreateModal = ({ editingContextId, widget, onClose, representationId }: CreateModalProps) => {
+export const CreateModal = ({ editingContextId, widget, onClose, formId }: CreateModalProps) => {
   const classes = useStyle();
   const { httpOrigin } = useContext<ServerContextValue>(ServerContext);
   const { addErrorMessage } = useMultiToast();
@@ -157,7 +158,7 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
   useEffect(() => {
     const changeContainmentModeEvent: ChangeContainmentModeEvent = {
       containment: widget.reference.containment,
-      containerKind: widget.reference.containment ? widget.reference.typeName : null,
+      containerKind: widget.reference.containment ? widget.reference.ownerKind : null,
       containerId: widget.reference.containment ? widget.ownerId : null,
       type: 'CHANGE_CONTAINMENT_MODE',
     };
@@ -234,8 +235,12 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
     }
   }, [childCreationDescriptionsLoading, childCreationDescriptionsData, childCreationDescriptionsError]);
 
-  const [createElement, { loading: createElementLoading, error: createElementError, data: createElementData }] =
-    useMutation<GQLCreateElementMutationData, GQLCreateElementMutationVariables>(createElementMutation);
+  const [
+    createElementInReference,
+    { loading: createElementLoading, error: createElementError, data: createElementData },
+  ] = useMutation<GQLCreateElementInReferenceMutationData, GQLCreateElementInReferenceMutationVariables>(
+    createElementInReferenceMutation
+  );
 
   useEffect(() => {
     if (!createElementLoading) {
@@ -249,9 +254,9 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
         };
         dispatch(handleResponseEvent);
 
-        const { createElement } = createElementData;
-        if (isErrorPayload(createElement)) {
-          const { message } = createElement;
+        const { createElementInReference } = createElementData;
+        if (isErrorPayload(createElementInReference)) {
+          const { message } = createElementInReference;
           addErrorMessage(message);
         }
       }
@@ -259,15 +264,16 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
   }, [createElementLoading, createElementData, createElementError]);
 
   const onCreateObject = () => {
-    let input = undefined;
+    let input: GQLCreateElementInReferenceInput | null = null;
     if (createModal === 'validForChild') {
       dispatch({ type: 'CREATE_CHILD' } as CreateChildEvent);
       input = {
         id: crypto.randomUUID(),
         editingContextId,
-        representationId,
+        representationId: formId,
         referenceWidgetId: widget.id,
         containerId,
+        domainId: null,
         creationDescriptionId: selectedChildCreationDescriptionId,
       };
     } else if (createModal === 'validForRoot') {
@@ -275,14 +281,14 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
       input = {
         id: crypto.randomUUID(),
         editingContextId,
-        representationId,
+        representationId: formId,
         referenceWidgetId: widget.id,
         containerId,
         domainId: selectedDomainId,
         creationDescriptionId: selectedChildCreationDescriptionId,
       };
     }
-    createElement({ variables: { input } });
+    createElementInReference({ variables: { input } });
   };
 
   const onDomainChange = (event) => {
@@ -356,7 +362,8 @@ export const CreateModal = ({ editingContextId, widget, onClose, representationI
               enableMultiSelection={false}
               title={'Select the container'}
               leafType={'container'}
-              typeName={widget.reference.referenceKind}
+              ownerKind={widget.reference.referenceKind}
+              formId={formId}
             />
           )}
           {containerKind === 'siriusWeb://document' && (

@@ -27,7 +27,7 @@ import org.eclipse.sirius.components.graphql.api.IExceptionWrapper;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * The data fetcher used to move a reference value inside a milti-valued reference widget.
+ * The data fetcher used to move a reference value inside a multi-valued reference widget.
  *
  * @author Jerome Gout
  */

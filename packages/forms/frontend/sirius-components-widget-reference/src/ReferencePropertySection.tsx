@@ -22,20 +22,25 @@ import { useEffect, useState } from 'react';
 import {
   GQLAddReferenceValuesMutationData,
   GQLAddReferenceValuesMutationVariables,
+  GQLAddReferenceValuesPayload,
   GQLClearReferenceMutationData,
   GQLClearReferenceMutationVariables,
+  GQLClearReferencePayload,
   GQLClickReferenceValueMutationData,
   GQLClickReferenceValueMutationVariables,
   GQLClickReferenceValuePayload,
   GQLErrorPayload,
   GQLMoveReferenceValueMutationData,
   GQLMoveReferenceValueMutationVariables,
+  GQLMoveReferenceValuePayload,
   GQLReferenceValue,
   GQLReferenceWidget,
   GQLRemoveReferenceValueMutationData,
   GQLRemoveReferenceValueMutationVariables,
+  GQLRemoveReferenceValuePayload,
   GQLSetReferenceValueMutationData,
   GQLSetReferenceValueMutationVariables,
+  GQLSetReferenceValuePayload,
   GQLSuccessPayload,
 } from './ReferenceWidgetFragment.types';
 import { ValuedReferenceAutocomplete } from './components/ValuedReferenceAutocomplete';
@@ -169,10 +174,24 @@ export const moveReferenceValueMutation = gql`
   }
 `;
 
-const isErrorPayload = (payload: GQLClickReferenceValuePayload): payload is GQLErrorPayload =>
-  payload.__typename === 'ErrorPayload';
-const isSuccessPayload = (payload: GQLClickReferenceValuePayload): payload is GQLSuccessPayload =>
-  payload.__typename === 'SuccessPayload';
+const isErrorPayload = (
+  payload:
+    | GQLClickReferenceValuePayload
+    | GQLClearReferencePayload
+    | GQLRemoveReferenceValuePayload
+    | GQLSetReferenceValuePayload
+    | GQLAddReferenceValuesPayload
+    | GQLMoveReferenceValuePayload
+): payload is GQLErrorPayload => payload.__typename === 'ErrorPayload';
+const isSuccessPayload = (
+  payload:
+    | GQLClickReferenceValuePayload
+    | GQLClearReferencePayload
+    | GQLRemoveReferenceValuePayload
+    | GQLSetReferenceValuePayload
+    | GQLAddReferenceValuesPayload
+    | GQLMoveReferenceValuePayload
+): payload is GQLSuccessPayload => payload.__typename === 'SuccessPayload';
 
 export const ReferencePropertySection = ({
   editingContextId,
@@ -332,6 +351,18 @@ export const ReferencePropertySection = ({
     }
   }, [moveLoading, moveError, moveData]);
 
+  const callClearReference = () => {
+    const variables = {
+      input: {
+        id: crypto.randomUUID(),
+        editingContextId,
+        representationId: formId,
+        referenceWidgetId: widget.id,
+      },
+    };
+    clearReference({ variables });
+  };
+
   const callSetReferenceValue = (newValueId: string) => {
     if (newValueId) {
       const variables = {
@@ -470,19 +501,13 @@ export const ReferencePropertySection = ({
         removeElement={callRemoveReferenceValue}
         moveElement={callMoveReferenceValue}
         widget={widget}
+        formId={formId}
       />
     ) : (
-      <BrowseModal editingContextId={editingContextId} onClose={setSelectedElement} widget={widget} />
+      <BrowseModal editingContextId={editingContextId} onClose={setSelectedElement} widget={widget} formId={formId} />
     );
   } else if (modalDisplayed === 'create') {
-    modal = (
-      <CreateModal
-        editingContextId={editingContextId}
-        onClose={addNewElement}
-        widget={widget}
-        representationId={formId}
-      />
-    );
+    modal = <CreateModal editingContextId={editingContextId} onClose={addNewElement} widget={widget} formId={formId} />;
   }
 
   return (
@@ -505,7 +530,7 @@ export const ReferencePropertySection = ({
           onMoreClick={onBrowse}
           onCreateClick={onCreate}
           optionClickHandler={clickHandler}
-          clearReference={clearReference}
+          clearReference={callClearReference}
           removeReferenceValue={callRemoveReferenceValue}
           addReferenceValues={callAddReferenceValues}
           setReferenceValue={callSetReferenceValue}

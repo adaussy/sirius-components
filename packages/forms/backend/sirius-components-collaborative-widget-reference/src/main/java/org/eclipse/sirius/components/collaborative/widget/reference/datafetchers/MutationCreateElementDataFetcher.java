@@ -31,7 +31,7 @@ import graphql.schema.DataFetchingEnvironment;
  *
  * @author Jerome Gout
  */
-@MutationDataFetcher(type = "Mutation", field = "createElement")
+@MutationDataFetcher(type = "Mutation", field = "createElementInReference")
 public class MutationCreateElementDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<IPayload>> {
     private static final String INPUT_ARGUMENT = "input";
 

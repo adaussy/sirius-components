@@ -29,7 +29,7 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * The data fetcher used to add reference values.
  *
- * @author pcdavid
+ * @author Jerome Gout
  */
 @MutationDataFetcher(type = "Mutation", field = "addReferenceValues")
 public class MutationAddReferenceValuesDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<IPayload>> {

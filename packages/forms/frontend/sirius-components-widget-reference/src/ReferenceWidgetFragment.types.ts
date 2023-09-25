@@ -32,7 +32,7 @@ export interface GQLReferenceWidgetStyle {
 }
 
 export interface GQLReference {
-  typeName: string;
+  ownerKind: string;
   referenceKind: string;
   containment: boolean;
   manyValued: boolean;
@@ -46,11 +46,23 @@ export interface GQLReferenceValue {
   hasClickAction: boolean;
 }
 
-export interface GQLErrorPayload extends GQLClickReferenceValuePayload {
+export interface GQLErrorPayload
+  extends GQLClickReferenceValuePayload,
+    GQLClearReferencePayload,
+    GQLRemoveReferenceValuePayload,
+    GQLSetReferenceValuePayload,
+    GQLAddReferenceValuesPayload,
+    GQLMoveReferenceValuePayload {
   messages: GQLMessage[];
 }
 
-export interface GQLSuccessPayload extends GQLClickReferenceValuePayload {
+export interface GQLSuccessPayload
+  extends GQLClickReferenceValuePayload,
+    GQLClearReferencePayload,
+    GQLRemoveReferenceValuePayload,
+    GQLSetReferenceValuePayload,
+    GQLAddReferenceValuesPayload,
+    GQLMoveReferenceValuePayload {
   messages: GQLMessage[];
 }
 

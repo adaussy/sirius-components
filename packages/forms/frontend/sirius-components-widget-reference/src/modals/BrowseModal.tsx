@@ -28,7 +28,7 @@ const useBrowserModalStyles = makeStyles((_) => ({
   },
 }));
 
-export const BrowseModal = ({ editingContextId, widget, onClose }: BrowseModalProps) => {
+export const BrowseModal = ({ editingContextId, widget, onClose, formId }: BrowseModalProps) => {
   const styles = useBrowserModalStyles();
   const [browserSelection, setBrowserSelection] = useState<Selection>({ entries: widget.referenceValues });
 
@@ -51,7 +51,8 @@ export const BrowseModal = ({ editingContextId, widget, onClose }: BrowseModalPr
             enableMultiSelection={widget.reference.manyValued}
             title={'Choices'}
             leafType={'reference'}
-            typeName={widget.reference.typeName}
+            ownerKind={widget.reference.ownerKind}
+            formId={formId}
           />
         </DialogContent>
         <DialogActions>

@@ -21,8 +21,8 @@ import org.eclipse.sirius.components.collaborative.api.Monitoring;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormEventHandler;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormInput;
 import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
-import org.eclipse.sirius.components.collaborative.forms.messages.ICollaborativeFormMessageService;
 import org.eclipse.sirius.components.collaborative.widget.reference.dto.ClearReferenceInput;
+import org.eclipse.sirius.components.collaborative.widget.reference.messages.IReferenceMessageService;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IPayload;
@@ -47,13 +47,13 @@ import reactor.core.publisher.Sinks.One;
 @Service
 public class ClearReferenceEventHandler implements IFormEventHandler {
 
-    private final ICollaborativeFormMessageService messageService;
+    private final IReferenceMessageService messageService;
 
     private final Counter counter;
 
     private final IFormQueryService formQueryService;
 
-    public ClearReferenceEventHandler(IFormQueryService formQueryService, ICollaborativeFormMessageService messageService, MeterRegistry meterRegistry) {
+    public ClearReferenceEventHandler(IFormQueryService formQueryService, IReferenceMessageService messageService, MeterRegistry meterRegistry) {
         this.formQueryService = Objects.requireNonNull(formQueryService);
         this.messageService = Objects.requireNonNull(messageService);
 
@@ -83,7 +83,7 @@ public class ClearReferenceEventHandler implements IFormEventHandler {
 
             IStatus status;
             if (optionalReferenceWidget.map(ReferenceWidget::isReadOnly).filter(Boolean::booleanValue).isPresent()) {
-                status = new Failure("Read-only widget can not be edited");
+                status = new Failure(this.messageService.unableToEditReadOnlyWidget());
             } else {
                 status = optionalReferenceWidget.map(ReferenceWidget::getClearHandler).map(Supplier::get).orElse(new Failure(""));
             }

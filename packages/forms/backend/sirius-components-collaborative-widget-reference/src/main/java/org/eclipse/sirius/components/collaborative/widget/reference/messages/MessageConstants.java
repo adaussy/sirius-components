@@ -10,13 +10,20 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.components.widget.reference.dto;
+package org.eclipse.sirius.components.collaborative.widget.reference.messages;
 
 /**
- * Input object to pass inputs to the moveHandler field of ReferenceWidget.
+ * This class is used to hold all the keys of the internationalization messages.
  *
  * @author Jerome Gout
  */
-public record MoveReferenceValueHandlerInput(Object value, int fromIndex, int toIndex) {
+public final class MessageConstants {
 
+    public static final String INVALID_INPUT = "INVALID_INPUT";
+    public static final String INVALID_IDS = "INVALID_IDS";
+    public static final String UNABLE_TO_EDIT_READONLY_WIDGET = "UNABLE_TO_EDIT_READONLY_WIDGET";
+
+    private MessageConstants() {
+        // Prevent instantiation
+    }
 }

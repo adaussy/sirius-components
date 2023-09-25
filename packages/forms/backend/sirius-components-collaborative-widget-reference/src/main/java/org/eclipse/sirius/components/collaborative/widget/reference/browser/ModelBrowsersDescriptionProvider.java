@@ -14,6 +14,7 @@ package org.eclipse.sirius.components.collaborative.widget.reference.browser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.sirius.components.collaborative.api.IRepresentationSearchService;
+import org.eclipse.sirius.components.collaborative.forms.api.IFormQueryService;
 import org.eclipse.sirius.components.compatibility.services.ImageConstants;
 import org.eclipse.sirius.components.core.URLParser;
 import org.eclipse.sirius.components.core.api.IEditingContext;
@@ -42,12 +45,14 @@ import org.eclipse.sirius.components.core.configuration.IRepresentationDescripti
 import org.eclipse.sirius.components.emf.ResourceMetadataAdapter;
 import org.eclipse.sirius.components.emf.services.EditingContext;
 import org.eclipse.sirius.components.emf.services.api.IEMFKindService;
+import org.eclipse.sirius.components.forms.Form;
 import org.eclipse.sirius.components.representations.Failure;
 import org.eclipse.sirius.components.representations.GetOrCreateRandomIdProvider;
 import org.eclipse.sirius.components.representations.IStatus;
 import org.eclipse.sirius.components.representations.VariableManager;
 import org.eclipse.sirius.components.trees.description.TreeDescription;
 import org.eclipse.sirius.components.trees.renderer.TreeRenderer;
+import org.eclipse.sirius.components.widget.reference.ReferenceWidget;
 import org.springframework.stereotype.Service;
 
 /**
@@ -72,10 +77,18 @@ public class ModelBrowsersDescriptionProvider implements IRepresentationDescript
 
     private final IEMFKindService emfKindService;
 
-    public ModelBrowsersDescriptionProvider(IObjectService objectService, IURLParser urlParser, IEMFKindService emfKindService) {
+    private final IFormQueryService formQueryService;
+
+    private final IRepresentationSearchService representationSearchService;
+
+
+    public ModelBrowsersDescriptionProvider(IObjectService objectService, IURLParser urlParser, IEMFKindService emfKindService, IFormQueryService formQueryService,
+        IRepresentationSearchService representationSearchService) {
         this.objectService = Objects.requireNonNull(objectService);
         this.urlParser = Objects.requireNonNull(urlParser);
         this.emfKindService = Objects.requireNonNull(emfKindService);
+        this.formQueryService = Objects.requireNonNull(formQueryService);
+        this.representationSearchService = Objects.requireNonNull(representationSearchService);
     }
 
     @Override
@@ -172,7 +185,7 @@ public class ModelBrowsersDescriptionProvider implements IRepresentationDescript
         if (optionalTreeId.isPresent() && optionalTreeId.get().startsWith(TREE_KIND) && optionalEditingContext.isPresent()) {
             Registry ePackageRegistry = optionalEditingContext.get().getDomain().getResourceSet().getPackageRegistry();
             Map<String, List<String>> parameters = new URLParser().getParameterValues(optionalTreeId.get());
-            String refContainer = parameters.get("typeName").get(0);
+            String refContainer = parameters.get("ownerKind").get(0);
 
             String ePackageName = this.emfKindService.getEPackageName(refContainer);
             String eClassName = this.emfKindService.getEClassName(refContainer);
@@ -287,21 +300,39 @@ public class ModelBrowsersDescriptionProvider implements IRepresentationDescript
     }
 
     private List<Resource> getElements(VariableManager variableManager) {
-        var optionalEditingContext = Optional.of(variableManager.getVariables().get(IEditingContext.EDITING_CONTEXT));
-        var optionalResourceSet = optionalEditingContext.filter(IEditingContext.class::isInstance)
-                .filter(EditingContext.class::isInstance)
-                .map(EditingContext.class::cast)
-                .map(EditingContext::getDomain)
-                .map(EditingDomain::getResourceSet);
+        var optionalTreeId = variableManager.get(GetOrCreateRandomIdProvider.PREVIOUS_REPRESENTATION_ID, String.class);
+        var optionalEditingContext = variableManager.get(IEditingContext.EDITING_CONTEXT, EditingContext.class);
+        if (optionalTreeId.isPresent() && optionalTreeId.get().startsWith(TREE_KIND) && optionalEditingContext.isPresent()) {
+            Map<String, List<String>> parameters = new URLParser().getParameterValues(optionalTreeId.get());
+            String formId = parameters.get("formId").get(0);
+            String refId = parameters.get("referenceId").get(0);
+            Optional<Form> optionalForm = this.representationSearchService.findById(optionalEditingContext.get(), formId, Form.class);
+            if (optionalForm.isPresent() && !optionalForm.get().getPages().isEmpty()) {
+                var optionalReferenceWidget = this.formQueryService.findWidget(optionalForm.get(), refId).filter(ReferenceWidget.class::isInstance).map(ReferenceWidget.class::cast);
+                if (optionalReferenceWidget.isPresent()) {
+//                    return optionalReferenceWidget.map(ReferenceWidget::getCandidatesSearchScope).map(handler -> handler.get()).orElse(Collections.emptyList());
+                }
+            } else {
+                var optionalResourceSet = optionalEditingContext.filter(IEditingContext.class::isInstance)
+                        .filter(EditingContext.class::isInstance)
+                        .map(EditingContext.class::cast)
+                        .map(EditingContext::getDomain)
+                        .map(EditingDomain::getResourceSet);
 
-        if (optionalResourceSet.isPresent()) {
-            var resourceSet = optionalResourceSet.get();
-            return resourceSet.getResources().stream()
-                    .filter(res -> res.getURI() != null && EditingContext.RESOURCE_SCHEME.equals(res.getURI().scheme()))
-                    .sorted(Comparator.nullsLast(Comparator.comparing(this::getResourceLabel, String.CASE_INSENSITIVE_ORDER)))
-                    .toList();
+                if (optionalResourceSet.isPresent()) {
+                    var resourceSet = optionalResourceSet.get();
+                    return resourceSet.getResources().stream()
+                            .filter(res -> res.getURI() != null && EditingContext.RESOURCE_SCHEME.equals(res.getURI().scheme()))
+                            .sorted(Comparator.nullsLast(Comparator.comparing(this::getResourceLabel, String.CASE_INSENSITIVE_ORDER)))
+                            .toList();
+                }
+
+            }
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
+
+
+//        return new ArrayList<>();
     }
 
     private boolean hasChildren(VariableManager variableManager, Function<VariableManager, Boolean> isSelectableProvider) {

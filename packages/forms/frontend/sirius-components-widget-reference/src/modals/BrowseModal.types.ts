@@ -17,4 +17,5 @@ export interface BrowseModalProps {
   editingContextId: string;
   widget: GQLReferenceWidget;
   onClose: (selectedElementId: string) => void;
+  formId: string;
 }

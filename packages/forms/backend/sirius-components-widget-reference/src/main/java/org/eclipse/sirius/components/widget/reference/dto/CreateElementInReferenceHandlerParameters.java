@@ -17,10 +17,10 @@ import java.util.UUID;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * Input object to pass inputs to the createElementHandler field of ReferenceWidget.
+ * Input object to pass inputs to the createElementInReferenceHandler field of ReferenceWidget.
  *
  * @author Jerome Gout
  */
-public record CreateElementHandlerInput(UUID documentId, String domainId, EObject parent, String creationDescriptionId) {
+public record CreateElementInReferenceHandlerParameters(UUID documentId, String domainId, EObject parent, String creationDescriptionId) {
 
 }

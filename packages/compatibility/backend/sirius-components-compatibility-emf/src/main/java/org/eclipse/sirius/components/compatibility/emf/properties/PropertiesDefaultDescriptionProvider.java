@@ -59,7 +59,7 @@ public class PropertiesDefaultDescriptionProvider implements IPropertiesDefaultD
 
     private final IEMFKindService emfKindService;
 
-    private IFeedbackMessageService feedbackMessageService;
+    private final IFeedbackMessageService feedbackMessageService;
 
     private final ComposedAdapterFactory composedAdapterFactory;
 
