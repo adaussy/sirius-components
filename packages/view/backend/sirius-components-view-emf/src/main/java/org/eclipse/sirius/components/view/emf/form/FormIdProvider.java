@@ -17,6 +17,7 @@ import java.util.Objects;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.sirius.components.core.api.IObjectService;
 import org.eclipse.sirius.components.view.form.FormDescription;
+import org.eclipse.sirius.components.view.form.FormElementDescription;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,5 +44,13 @@ public class FormIdProvider implements IFormIdProvider {
 
     private String getSourceIdFromElementDescription(EObject elementDescription) {
         return elementDescription.eResource().getURI().toString().split("///")[1];
+    }
+
+    @Override
+    public String getId(FormElementDescription widgetDescription) {
+        String sourceId = this.getSourceIdFromElementDescription(widgetDescription);
+        String sourceElementId = this.objectService.getId(widgetDescription);
+        return FORM_ELEMENT_DESCRIPTION_KIND + widgetDescription.eClass().getName() + "&" + SOURCE_KIND + "=" + VIEW_SOURCE_KIND + "&" + SOURCE_ID + "=" + sourceId + "&" + SOURCE_ELEMENT_ID + "="
+                + sourceElementId;
     }
 }

@@ -70,6 +70,7 @@ public class ViewFormDescriptionConverter implements IRepresentationDescriptionC
 
     private final IFeedbackMessageService feedbackMessageService;
 
+
     public ViewFormDescriptionConverter(IObjectService objectService, IEditService editService, IFormIdProvider formIdProvider, List<IWidgetConverterProvider> customWidgetConverterProviders, IFeedbackMessageService feedbackMessageService) {
         this.objectService = Objects.requireNonNull(objectService);
         this.editService = Objects.requireNonNull(editService);
@@ -88,7 +89,7 @@ public class ViewFormDescriptionConverter implements IRepresentationDescriptionC
         org.eclipse.sirius.components.view.form.FormDescription viewFormDescription = (org.eclipse.sirius.components.view.form.FormDescription) representationDescription;
         List<Switch<AbstractWidgetDescription>> widgetConverters = this.customWidgetConverterProviders.stream().map(provider -> provider.getWidgetConverter(interpreter,
                 this.editService, this.objectService, this.feedbackMessageService)).toList();
-        Switch<AbstractControlDescription> dispatcher = new ViewFormDescriptionConverterSwitch(interpreter, this.editService, this.objectService, new ComposedSwitch<>(widgetConverters), this.feedbackMessageService);
+        Switch<AbstractControlDescription> dispatcher = new ViewFormDescriptionConverterSwitch(interpreter, this.editService, this.objectService, new ComposedSwitch<>(widgetConverters), this.feedbackMessageService, this.formIdProvider);
 
         List<PageDescription> pageDescriptions = viewFormDescription.getPages()
                 .stream()

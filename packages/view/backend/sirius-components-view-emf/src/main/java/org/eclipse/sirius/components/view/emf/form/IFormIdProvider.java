@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.sirius.components.view.emf.form;
 
-
 import org.eclipse.sirius.components.view.emf.IRepresentationDescriptionIdProvider;
 import org.eclipse.sirius.components.view.form.FormDescription;
+import org.eclipse.sirius.components.view.form.FormElementDescription;
 
 /**
  * Interface to provide ids for FormDescription.
@@ -25,8 +25,12 @@ public interface IFormIdProvider extends IRepresentationDescriptionIdProvider<Fo
 
     String FORM_DESCRIPTION_KIND = PREFIX + "?kind=formDescription";
 
+    String FORM_ELEMENT_DESCRIPTION_KIND = "siriusComponents://formElementDescription?kind=";
+
     @Override
     String getId(FormDescription formDescription);
+
+    String getId(FormElementDescription widgetDescription);
 
     /**
      * Implementation which does nothing, used for mocks in unit tests.
@@ -39,6 +43,10 @@ public interface IFormIdProvider extends IRepresentationDescriptionIdProvider<Fo
         public String getId(FormDescription formDescription) {
             return "";
         }
+
+        @Override
+        public String getId(FormElementDescription widgetDescription) {
+            return "";
+        }
     }
 }
-

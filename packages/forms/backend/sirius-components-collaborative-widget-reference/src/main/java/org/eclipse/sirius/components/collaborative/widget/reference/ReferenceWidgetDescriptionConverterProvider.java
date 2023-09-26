@@ -20,6 +20,7 @@ import org.eclipse.sirius.components.core.api.IObjectService;
 import org.eclipse.sirius.components.emf.services.api.IEMFKindService;
 import org.eclipse.sirius.components.forms.description.AbstractWidgetDescription;
 import org.eclipse.sirius.components.interpreter.AQLInterpreter;
+import org.eclipse.sirius.components.view.emf.form.IFormIdProvider;
 import org.eclipse.sirius.components.view.emf.form.IWidgetConverterProvider;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,16 @@ public class ReferenceWidgetDescriptionConverterProvider implements IWidgetConve
 
     private final IEMFKindService emfKindService;
 
-    public ReferenceWidgetDescriptionConverterProvider(ComposedAdapterFactory composedAdapterFactory, IEMFKindService emfKindService) {
+    private IFormIdProvider widgetIdProvider;
+
+    public ReferenceWidgetDescriptionConverterProvider(ComposedAdapterFactory composedAdapterFactory, IEMFKindService emfKindService, IFormIdProvider widgetIdProvider) {
         this.composedAdapterFactory = composedAdapterFactory;
         this.emfKindService = emfKindService;
+        this.widgetIdProvider = widgetIdProvider;
     }
 
     @Override
     public Switch<AbstractWidgetDescription> getWidgetConverter(AQLInterpreter interpreter, IEditService editService, IObjectService objectService, IFeedbackMessageService feedbackMessageService) {
-        return new ReferenceWidgetDescriptionConverterSwitch(interpreter, objectService, editService, this.emfKindService, feedbackMessageService, this.composedAdapterFactory);
+        return new ReferenceWidgetDescriptionConverterSwitch(interpreter, objectService, editService, this.emfKindService, feedbackMessageService, this.composedAdapterFactory, this.widgetIdProvider);
     }
 }
