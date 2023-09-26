@@ -76,6 +76,7 @@ public class ReferenceWidgetDescriptor implements IWidgetDescriptor {
                     .referenceKind(props.getReferenceKind())
                     .containment(props.isContainment())
                     .many(props.isMany())
+                    .descriptionId(props.getDescriptionId())
                     .referenceValues(props.getValues())
                     .referenceOptions(props.getOptions())
                     .ownerId(props.getOwnerId())

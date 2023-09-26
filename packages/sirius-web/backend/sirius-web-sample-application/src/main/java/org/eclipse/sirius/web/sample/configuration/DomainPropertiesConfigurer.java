@@ -18,12 +18,14 @@ import java.util.UUID;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.sirius.components.collaborative.forms.services.api.IPropertiesDescriptionRegistry;
 import org.eclipse.sirius.components.collaborative.forms.services.api.IPropertiesDescriptionRegistryConfigurer;
 import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
 import org.eclipse.sirius.components.domain.DomainPackage;
 import org.eclipse.sirius.components.emf.services.EditingContext;
+import org.eclipse.sirius.components.emf.services.IDAdapter;
 import org.eclipse.sirius.components.interpreter.AQLInterpreter;
 import org.eclipse.sirius.components.representations.IRepresentationDescription;
 import org.eclipse.sirius.components.view.ChangeContext;
@@ -41,7 +43,10 @@ import org.eclipse.sirius.components.view.form.PageDescription;
 import org.eclipse.sirius.components.view.form.SelectDescription;
 import org.eclipse.sirius.components.view.form.TextfieldDescription;
 import org.eclipse.sirius.components.view.form.WidgetDescription;
+import org.eclipse.sirius.components.widgets.reference.ReferenceFactory;
+import org.eclipse.sirius.components.widgets.reference.ReferenceWidgetDescription;
 import org.eclipse.sirius.web.sample.services.DomainAttributeServices;
+import org.eclipse.sirius.web.services.api.representations.IInMemoryViewRegistry;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -56,7 +61,10 @@ public class DomainPropertiesConfigurer implements IPropertiesDescriptionRegistr
 
     private final IFeedbackMessageService feedbackMessageService;
 
-    public DomainPropertiesConfigurer(ViewFormDescriptionConverter converter, IFeedbackMessageService feedbackMessageService) {
+    private IInMemoryViewRegistry viewRegistry;
+
+    public DomainPropertiesConfigurer(ViewFormDescriptionConverter converter, IFeedbackMessageService feedbackMessageService, IInMemoryViewRegistry viewRegistry) {
+        this.viewRegistry = Objects.requireNonNull(viewRegistry);
         this.converter = Objects.requireNonNull(converter);
         this.feedbackMessageService = Objects.requireNonNull(feedbackMessageService);
     }
@@ -72,6 +80,12 @@ public class DomainPropertiesConfigurer implements IPropertiesDescriptionRegistr
         View view = org.eclipse.sirius.components.view.ViewFactory.eINSTANCE.createView();
         resource.getContents().add(view);
         view.getDescriptions().add(viewFormDescription);
+
+        view.eAllContents().forEachRemaining(eObject -> {
+            eObject.eAdapters().add(new IDAdapter(UUID.nameUUIDFromBytes(EcoreUtil.getURI(eObject).toString().getBytes())));
+        });
+
+        this.viewRegistry.register(view);
 
         // Convert the View-based FormDescription and register the result into the system
         AQLInterpreter interpreter = new AQLInterpreter(List.of(), List.of(new DomainAttributeServices(this.feedbackMessageService)), List.of(DomainPackage.eINSTANCE));
@@ -93,7 +107,25 @@ public class DomainPropertiesConfigurer implements IPropertiesDescriptionRegistr
         page.setLabelExpression("aql:self.name + ': ' + self.getDataType().capitalize()");
         form.getPages().add(page);
         page.getGroups().add(this.createGroup());
+
+        PageDescription entityPage = FormFactory.eINSTANCE.createPageDescription();
+        entityPage.setDomainType("domain::Entity");
+        entityPage.setPreconditionExpression("");
+        entityPage.setLabelExpression("aql:self.name");
+        form.getPages().add(entityPage);
+        entityPage.getGroups().add(this.createEntityGroup());
         return form;
+    }
+
+    private GroupDescription createEntityGroup() {
+        GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
+        group.setDisplayMode(GroupDisplayMode.LIST);
+        group.setName("Core Properties");
+        group.setLabelExpression("Core Properties");
+        group.setSemanticCandidatesExpression("aql:self");
+        //TODO add all properties of entity here
+        group.getChildren().add(this.createSuperTypeReferenceWidget());
+        return group;
     }
 
     private GroupDescription createGroup() {
@@ -144,6 +176,20 @@ public class DomainPropertiesConfigurer implements IPropertiesDescriptionRegistr
         ChangeContext setValueOperation = ViewFactory.eINSTANCE.createChangeContext();
         setValueOperation.setExpression("aql:self.setDataType(newValue)");
         selectWidget.getBody().add(setValueOperation);
+        return selectWidget;
+    }
+
+    private WidgetDescription createSuperTypeReferenceWidget() {
+        ReferenceWidgetDescription selectWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
+        selectWidget.setName("Super Type");
+        selectWidget.setLabelExpression("Super TOTO");
+        selectWidget.setReferenceNameExpression("aql:'superTypes'");
+        // selectWidget.setCandidatesExpression("aql:self.getAvailableDataTypes()");
+        // selectWidget.setValueExpression("aql:self.getDataType()");
+        // selectWidget.setCandidateLabelExpression("aql:candidate.capitalize()");
+        // ChangeContext setValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        // setValueOperation.setExpression("aql:self.setDataType(newValue)");
+        // selectWidget.getBody().add(setValueOperation);
         return selectWidget;
     }
 

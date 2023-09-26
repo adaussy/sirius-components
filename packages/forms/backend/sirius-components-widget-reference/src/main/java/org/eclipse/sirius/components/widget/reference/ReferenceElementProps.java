@@ -55,6 +55,9 @@ public final class ReferenceElementProps implements IProps {
 
     private boolean containment;
 
+    private String descriptionId;
+
+
     private boolean many;
 
     private ReferenceWidgetStyle style;
@@ -123,6 +126,10 @@ public final class ReferenceElementProps implements IProps {
 
     public boolean isMany() {
         return this.many;
+    }
+
+    public String getDescriptionId() {
+        return this.descriptionId;
     }
 
     public ReferenceWidgetStyle getStyle() {
@@ -207,6 +214,8 @@ public final class ReferenceElementProps implements IProps {
         private Function<CreateElementInReferenceHandlerParameters, Object> createElementHandler;
 
         private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
+
+        private String descriptionId;
 
         private Builder(String id) {
             this.id = Objects.requireNonNull(id);
@@ -302,9 +311,17 @@ public final class ReferenceElementProps implements IProps {
             return this;
         }
 
+
+        public Builder descriptionId(String descriptionId) {
+            this.descriptionId = Objects.requireNonNull(descriptionId);
+            return this;
+        }
+
+
         public ReferenceElementProps build() {
             ReferenceElementProps referenceElementProps = new ReferenceElementProps();
             referenceElementProps.id = Objects.requireNonNull(this.id);
+            referenceElementProps.descriptionId = Objects.requireNonNull(this.descriptionId);
             referenceElementProps.label = Objects.requireNonNull(this.label);
             referenceElementProps.iconURL = this.iconURL;
             referenceElementProps.readOnly = this.readOnly;

@@ -67,7 +67,6 @@ public class ReferenceWidgetComponent implements IComponent {
         ReferenceWidgetDescription referenceDescription = this.props.getReferenceWidgetDescription();
 
         String label = referenceDescription.getLabelProvider().apply(variableManager);
-
         VariableManager idVariableManager = variableManager.createChild();
         idVariableManager.put(FormComponent.TARGET_OBJECT_ID, referenceDescription.getTargetObjectIdProvider().apply(variableManager));
         idVariableManager.put(FormComponent.CONTROL_DESCRIPTION_ID, referenceDescription.getId());
@@ -93,6 +92,7 @@ public class ReferenceWidgetComponent implements IComponent {
         var builder = ReferenceElementProps.newReferenceElementProps(id)
                 .label(label)
                 .iconURL(iconURL)
+                .descriptionId(referenceDescription.getId())
                 .values(items)
                 .options(options)
                 .ownerKind(ownerKind)

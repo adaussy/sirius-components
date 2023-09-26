@@ -51,9 +51,9 @@ import org.eclipse.sirius.components.widget.reference.ReferenceWidgetDescription
  */
 public class NonContainmentReferenceIfDescriptionProvider {
 
-    private static final String ID_DESCRIPTION_ID = "NonContainment Reference";
+    public static final String REFERENCE_WIDGET_DESCRIPTION_ID = "NonContainmentReferenceIfDescriptionProvider.ReferenceWidget";
 
-    private static final String REFERENCE_WIDGET_DESCRIPTION_ID = "ReferenceWidget";
+    private static final String ID_DESCRIPTION_ID = "NonContainment Reference";
 
     private final ComposedAdapterFactory composedAdapterFactory;
 

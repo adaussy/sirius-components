@@ -61,6 +61,8 @@ public final class ReferenceWidget extends AbstractWidget {
 
     private Supplier<List<?>> candidatesSearchScope;
 
+    private String descriptionId;
+
     private ReferenceWidget() {
         // Prevent instantiation
     }
@@ -71,6 +73,10 @@ public final class ReferenceWidget extends AbstractWidget {
 
     public List<ReferenceValue> getReferenceValues() {
         return this.referenceValues;
+    }
+
+    public String getDescriptionId() {
+        return this.descriptionId;
     }
 
     public List<ReferenceValue> getReferenceOptions() {
@@ -175,6 +181,8 @@ public final class ReferenceWidget extends AbstractWidget {
 
         private Function<MoveReferenceValueHandlerParameters, IStatus> moveHandler;
 
+        private String descriptionId;
+
         public Builder(String id) {
             this.id = Objects.requireNonNull(id);
         }
@@ -269,9 +277,16 @@ public final class ReferenceWidget extends AbstractWidget {
             return this;
         }
 
+        public Builder descriptionId(String descriptionId) {
+            this.descriptionId = Objects.requireNonNull(descriptionId);
+            return this;
+        }
+
+
         public ReferenceWidget build() {
             ReferenceWidget referenceWidget = new ReferenceWidget();
             referenceWidget.id = Objects.requireNonNull(this.id);
+            referenceWidget.descriptionId = Objects.requireNonNull(this.descriptionId);
             referenceWidget.label = Objects.requireNonNull(this.label);
             referenceWidget.iconURL = this.iconURL;
             referenceWidget.diagnostics = Objects.requireNonNull(this.diagnostics);

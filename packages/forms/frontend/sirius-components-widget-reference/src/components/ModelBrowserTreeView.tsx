@@ -63,7 +63,7 @@ export const ModelBrowserTreeView = ({
             ownerKind
           )}&targetType=${encodeURIComponent(widget.reference.referenceKind)}&ownerId=${
             widget.ownerId
-          }&formId=${formId}&referenceId=${widget.id}`}
+          }&formId=${formId}&referenceId=${widget.id}&descriptionId=${encodeURIComponent(widget.descriptionId)}`}
           enableMultiSelection={enableMultiSelection}
           synchronizedWithSelection={true}
           textToFilter={state.filterBarText}

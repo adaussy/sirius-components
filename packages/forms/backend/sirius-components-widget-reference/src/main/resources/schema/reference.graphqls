@@ -1,5 +1,6 @@
 type ReferenceWidget implements Widget {
   id: ID!
+  descriptionId: String!
   diagnostics: [Diagnostic!]!
   label: String!
   iconURL: String

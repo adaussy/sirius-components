@@ -177,6 +177,7 @@ const propertySectionsRegistry: PropertySectionComponentRegistry = {
       fields: `label
                iconURL
                ownerId
+               descriptionId
                reference {
                  ownerKind
                  referenceKind
