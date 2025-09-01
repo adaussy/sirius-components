@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 Obeo.
+ * Copyright (c) 2025 Obeo.
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,9 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.web.application.project.dto;
+package org.eclipse.sirius.web.application.document.dto;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
-import org.eclipse.sirius.components.core.api.IInput;
+import java.util.Map;
 
-/**
- * The input used to rename a project.
- *
- * @author sbegaudeau
- */
-public record RenameProjectInput(
-        @NotNull UUID id,
-        @NotNull String projectId,
-        @NotNull String newName) implements IInput {
+public record UploadedDocumentDTO(DocumentDTO document, String report, Map<String,String> idMapping) {
 }
-

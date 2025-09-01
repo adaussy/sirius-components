@@ -29,7 +29,7 @@ public class DisableDuplicateCapabilityVoter implements ICapabilityVoter {
         // Uncomment before committing
         //This feature is not fully implemented yet so disable it
         if (SiriusWebCapabilities.Project.DUPLICATE.equals(capability)) {
-            return CapabilityVote.DENIED;
+            //return CapabilityVote.DENIED;
         }
         return CapabilityVote.GRANTED;
     }

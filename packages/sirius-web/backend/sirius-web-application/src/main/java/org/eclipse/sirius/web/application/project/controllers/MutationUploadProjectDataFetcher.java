@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.sirius.web.application.project.controllers;
 
+import graphql.schema.DataFetchingEnvironment;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.eclipse.sirius.components.annotations.spring.graphql.MutationDataFetcher;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IPayload;
 import org.eclipse.sirius.components.graphql.api.IDataFetcherWithFieldCoordinates;
 import org.eclipse.sirius.components.graphql.api.UploadFile;
 import org.eclipse.sirius.web.application.UUIDParser;
-import org.eclipse.sirius.web.application.project.services.api.IProjectImportService;
+import org.eclipse.sirius.web.application.project.dto.UploadProjectInput;
+import org.eclipse.sirius.web.application.project.services.api.IProjectImportApplicationService;
 import org.eclipse.sirius.web.domain.services.api.IMessageService;
-
-import graphql.schema.DataFetchingEnvironment;
 
 /**
  * Data fetcher for the field Mutation#uploadProject.
@@ -42,11 +41,11 @@ public class MutationUploadProjectDataFetcher implements IDataFetcherWithFieldCo
 
     private static final String FILE = "file";
 
-    private final IProjectImportService projectImportService;
+    private final IProjectImportApplicationService projectImportService;
 
     private final IMessageService messageService;
 
-    public MutationUploadProjectDataFetcher(IProjectImportService projectImportService, IMessageService messageService) {
+    public MutationUploadProjectDataFetcher(IProjectImportApplicationService projectImportService, IMessageService messageService) {
         this.projectImportService = Objects.requireNonNull(projectImportService);
         this.messageService = Objects.requireNonNull(messageService);
     }
@@ -66,7 +65,7 @@ public class MutationUploadProjectDataFetcher implements IDataFetcherWithFieldCo
         if (optionalId.isPresent() && optionalFile.isPresent()) {
             var id = optionalId.get();
             var uploadFile = optionalFile.get();
-            return this.projectImportService.importProject(id, uploadFile);
+            return this.projectImportService.importProject(new UploadProjectInput(id, uploadFile));
         }
 
         return new ErrorPayload(optionalId.orElse(UUID.randomUUID()), this.messageService.unexpectedError());

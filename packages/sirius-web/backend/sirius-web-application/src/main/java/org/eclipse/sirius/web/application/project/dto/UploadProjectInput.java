@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.sirius.web.application.project.dto;
 
-import java.util.UUID;
-
-import org.eclipse.sirius.components.core.api.IInput;
-import org.eclipse.sirius.components.graphql.api.UploadFile;
-
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+import org.eclipse.sirius.components.events.ICause;
+import org.eclipse.sirius.components.graphql.api.UploadFile;
 
 /**
  * Input used to upload a new project.
  *
  * @author sbegaudeau
  */
-public record UploadProjectInput(@NotNull UUID id, UploadFile file) implements IInput {
+public record UploadProjectInput(@NotNull UUID id, UploadFile file) implements ICause {
 }

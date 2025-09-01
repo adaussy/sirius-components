@@ -10,20 +10,19 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.web.application.project.dto;
+package org.eclipse.sirius.web.application.document.dto;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
-import org.eclipse.sirius.components.core.api.IInput;
+import org.eclipse.sirius.components.core.api.IPayload;
 
 /**
- * The input used to rename a project.
+ * The payload of the upload of multiple documents mutation.
  *
- * @author sbegaudeau
+ * <p>Note that the order of the return {@link DocumentDTO} match the order to the given file to upload.</p>
+ *
+ * @author Arthur Daussy
  */
-public record RenameProjectInput(
-        @NotNull UUID id,
-        @NotNull String projectId,
-        @NotNull String newName) implements IInput {
+public record UploadDocumentsSuccessPayload(@NotNull UUID id, @NotNull List<UploadedDocumentDTO> uploadedDocuments) implements IPayload {
 }
-

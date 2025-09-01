@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Obeo.
+ * Copyright (c) 2025 Obeo.
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,12 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.eclipse.sirius.web.application.project.services.api;
+package org.eclipse.sirius.web.application.project.dto;
 
-import java.util.UUID;
-
-import org.eclipse.sirius.components.core.api.IPayload;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.sirius.components.graphql.api.UploadFile;
+import org.eclipse.sirius.web.application.project.services.RepresentationImportData;
 
-/**
- * Service used to import a project.
- *
- * @author jmallet
- */
-public interface IProjectImportService {
-
-    IPayload importProject(UUID inputId, UploadFile file);
-
+public record ProjectUpdateContent2(String projectName, Map<String, UploadFile> documents, List<RepresentationImportData> representations,Map<String, Object> manifest) {
 }
